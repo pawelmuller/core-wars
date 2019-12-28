@@ -124,15 +124,26 @@ Instructions = {
 
 
 class Instruction:
-    def __init__(self, line):
+    def __init__(self, line, instruction=None, modifier=None,
+                 A=None, B=None, type_A="$", type_B="$"):
         """
-        Takes line from file as argument and converts
-        it into Instruction object.
+        Creates Instruction object.
         """
-        self._line = line
-        self.convert(line)
+        if line:
+            self._line = line
+            self.convert(line)
+        else:
+            self._instruction = instruction
+            self._modifier = modifier
+            self._A = A
+            self._B = B
+            self._type_A = type_A
+            self._type_B = type_B
 
     def convert(self, line):
+        """
+        Converts Redcode file line into Instruction object.
+        """
         str_instruction = line.split(';', maxsplit=1)
         str_instruction = str_instruction.lstrip()
         self._instruction = str_instruction[0:3].upper()
@@ -143,5 +154,8 @@ class Instruction:
         self._B = 0  # to-do: wycina B
 
     def run(self):
+        """
+        Runs itself.
+        """
         Instructions[self._instruction](self._A, self._B,
                                         self._type_A, self._type_B)

@@ -7,17 +7,7 @@ class Warrior:
         self._path_to_file = path_to_file
         self.import_from_file(path_to_file)
 
-    def convert_line(self, line):
-        """
-        Converts given line into Instruction object and returns it.
-
-        Attributes:
-        :param line: single line from file
-        :type line: str
-        """
-        return Instruction(line)
-
-    def check_line(self, line):
+    def validate_line(self, line):
         """
         Method checks if line is suitable for converting to
         warrior instruction. If so returns True.
@@ -46,5 +36,5 @@ class Warrior:
         """
         with open(path_to_file, "r") as file:
             for line in file:
-                if self.check_line(line) is True:
-                    self._warrior_instructions.append(self.convert_line(line))
+                if self.validate_line(line) is True:
+                    self._warrior_instructions.append(Instruction(line))

@@ -35,11 +35,10 @@ if __name__ == "__main__":
     line = "         \n"
     print(line.lstrip())
     print(len(line.lstrip()))
-    '''
 
     line = "   spl.b	#2,	}0	;alimentador de processos e incrementa pont."
     str_instruction = line.split(';', maxsplit=1)[0]
     str_instruction = str_instruction.lstrip()
     instruction = str_instruction[0:3].upper()
     print(str_instruction)
-    print(instruction)
+    print(instruction)'''

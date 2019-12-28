@@ -6,7 +6,7 @@ if __name__ == "__main__":
     # Parsing arguments
     parser = argparse.ArgumentParser("MARS simulator")
     parser.add_argument("-coresize", type=int,
-                        help="Set the core size.", default=4000)
+                        help="Set the core size.", default=8000)
     parser.add_argument("-cyclelimit", type=int,
                         help="Cycles to run until tie.", default=10000)
     parser.add_argument("-display", type=bool,
