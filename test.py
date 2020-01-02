@@ -2,6 +2,7 @@
 
 # from Redcode import Instructions as Ins
 # from sys import argv
+from Redcode import Instruction
 
 
 def blablabla():
@@ -42,3 +43,10 @@ if __name__ == "__main__":
     instruction = str_instruction[0:3].upper()
     print(str_instruction)
     print(instruction)'''
+
+    default = Instruction(None)
+    test = Instruction(None)
+    if test == default:
+        print("True")
+    else:
+        print("False")

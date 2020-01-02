@@ -19,8 +19,14 @@ if __name__ == "__main__":
 
     # Creating list of Warrior objects created from pathways given as arguments
     warriors = [Warrior(path) for path in arguments.warriors]
-    print(warriors)
 
     # Core simulation
     core = MARS(arguments.coresize, arguments.cyclelimit, warriors)
-    core.simulate()
+    core.simulate(arguments.display)
+
+    # Game results (will show the results)
+    core.results(arguments.display)
+
+if __name__ == "__main__":
+    warr = [Warrior("Warriors/Imp_1.red"), Warrior("Warriors/Dwarf.red")]
+    test = MARS(8000, 10000, warr)
