@@ -1,7 +1,7 @@
 # Redcode instructions:
 def DAT(modifier, A, B, type_A, type_B):
     '''DAT -- data (kills the process)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B) - modifiers don't affect DAT
     pass
 
 
