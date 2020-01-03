@@ -62,8 +62,11 @@ class MARS():
         for warrior in warriors:
             index = self._find_a_place(warrior)
             # Placing if there is a place for the warrior:
-            for i in range(warrior.get_length()):
-                self._MARS[index+i] = warrior.get_instructions()[i]
+            iterators = range(warrior.get_length())
+            instructions = warrior.get_instructions()
+            for i, instruction in zip(iterators, instructions):
+                self._MARS[index + i] = instruction
+                instruction.set_index(index + i)
             warrior.set_absolute_start(index)
 
     def simulate(self, display):

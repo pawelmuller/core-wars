@@ -246,6 +246,10 @@ class Instruction:
         else:
             return True
 
+    def set_index(self, index):
+        """Sets instruction index (absolute location in core)."""
+        self._index = index
+
     def run(self):
         """
         Runs the instruction.

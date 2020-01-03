@@ -41,7 +41,7 @@ class Warrior:
                 if self._validate_line(line) is True:
                     self._instructions.append(Instruction(line))
 
-    def make_a_turn():
+    def make_a_turn(self):
         pass
 
     def change_process(self):
