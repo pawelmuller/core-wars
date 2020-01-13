@@ -10,13 +10,11 @@ class MARS():
         self._cycle_limit = cycle_limit
         self._warriors = warriors
         self._validate_warriors()
+        self._playing_warriors = self._warriors
 
         # Filling MARS with default instructions:
         for cell in range(self._size):
             self._MARS.append(Instruction(None, "DAT", None, 0, 0))
-
-        # Putting warriors in MARS:
-        self._place_warriors(self._warriors)
 
     def _validate_warriors(self):
         """
@@ -68,6 +66,13 @@ class MARS():
                 self._MARS[index + i] = instruction
                 instruction.set_index(index + i)
             warrior.set_absolute_start(index)
+
+    def prepare_for_simulation(self):
+        self._place_warriors(self._warriors)
+
+    def perform_cycle(self):  # Do rozwazenia
+        for warrior in self._playing_warriors:
+            warrior.make_a_turn()
 
     def simulate(self, display):
         pass

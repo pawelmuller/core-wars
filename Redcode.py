@@ -212,6 +212,24 @@ class Instruction:
             self._line = line
             self.convert(line)
 
+    def __repr__(self):
+        """Represents Instruction object."""
+        output = self._instruction
+        if self._modifier:
+            output += "." + self._modifier
+        output += " "
+        if self._type_A:
+            output += self._type_A + str(self._A)
+        else:
+            output += str(self._A)
+        if self._B:
+            output += " "
+            if self._type_B:
+                output += self._type_B + str(self._B)
+            else:
+                output += str(self._B)
+        return output
+
     def convert(self, line):
         """
         Converts Redcode file line into Instruction object.

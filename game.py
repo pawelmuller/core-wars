@@ -22,6 +22,7 @@ if __name__ == "__main__":
 
     # Core simulation
     core = MARS(arguments.coresize, arguments.cyclelimit, warriors)
+    core.prepare_for_simulation()
     core.simulate(arguments.display)
 
     # Game results (will show the results)

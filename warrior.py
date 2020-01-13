@@ -6,7 +6,7 @@ class Warrior:
         self._path_to_file = path_to_file
         self._instructions = self._import_from_file(path_to_file)
         self._length = len(self._instructions)
-        self._process_queue = []  # List of absolute indexes of instructions
+        self._process_queue = []  # List of indexes of different processes
 
     def _validate_line(self, line):
         """
