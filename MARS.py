@@ -1,6 +1,6 @@
 from Redcode import Instruction
 from random import randint
-from warrior import Warrior
+# from warrior import Warrior
 
 
 class MARS():
@@ -79,8 +79,3 @@ class MARS():
     def print_simplified_GUI(self):
         # Wyswietlanie przebiegu gry tekstowo w terminalu
         pass
-
-
-if __name__ == "__main__":
-    warr = [Warrior("Warriors/Imp_1.red"), Warrior("Warriors/Dwarf.red")]
-    test = MARS(8000, 10000, warr)

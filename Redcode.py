@@ -220,10 +220,10 @@ class Instruction:
         str_instruction = str_instruction[0].lstrip()
         self._instruction = str_instruction[0:3].upper()
         # TO DO:
-        self._modifier = str_instruction[0:3].upper()  # to-do: wycina modifier
-        self._type_A = "#"  # to-do: wycina typ adresowania A
+        # self._modifier = modifier.upper()  # to-do: wycina modifier
+        # self._type_A = "#"  # to-do: wycina typ adresowania A
         self._A = 0  # to-do: wycina A
-        self._type_B = "#"  # to-do: wycina typ adresowania B
+        # self._type_B = "#"  # to-do: wycina typ adresowania B
         self._B = 0  # to-do: wycina B
 
     def compare(self, other):

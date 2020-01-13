@@ -26,7 +26,3 @@ if __name__ == "__main__":
 
     # Game results (will show the results)
     core.results(arguments.display)
-
-if __name__ == "__main__":
-    warr = [Warrior("Warriors/Imp_1.red"), Warrior("Warriors/Dwarf.red")]
-    test = MARS(8000, 10000, warr)
