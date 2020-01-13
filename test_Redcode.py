@@ -25,3 +25,19 @@ def test_Instruction_convert():
     assert instruction4._type_A == "@"
     assert instruction4._B == 15
     assert instruction4._type_B == "#"
+
+
+def test_Instruction_compare():
+    instruction1 = Instruction("ADD.I 4, 3")
+    instruction2 = Instruction("          MOV.AB 4, 3")
+    assert instruction1.compare(instruction2) is False
+
+    instruction3 = Instruction("      JMP.A   -4")
+    instruction4 = Instruction("      JMP.A   -4")
+    assert instruction3.compare(instruction4)
+
+
+def test_Instruction_set_index():
+    instruction = Instruction("ADD.I #4, 3")
+    instruction.set_index(5)
+    assert instruction._index == 5

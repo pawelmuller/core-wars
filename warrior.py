@@ -4,8 +4,7 @@ from Redcode import Instruction
 class Warrior:
     def __init__(self, path_to_file):
         self._path_to_file = path_to_file
-        self._instructions = []
-        self._import_from_file(path_to_file)
+        self._instructions = self._import_from_file(path_to_file)
         self._length = len(self._instructions)
         self._process_queue = []  # List of absolute indexes of instructions
 
@@ -29,17 +28,19 @@ class Warrior:
 
     def _import_from_file(self, path_to_file):
         """
-        Method imports warrior from file and appends its instructions
-        (as objects) into self._warrior_instructions.
+        Method imports warrior from file and returns
+        a list of its instructions.
 
         Attributes:
         :param path_to_file: Path to Redcode file where warrior is located.
         :type path_to_file: str
         """
+        instructions = []
         with open(path_to_file, "r") as file:
             for line in file:
                 if self._validate_line(line) is True:
-                    self._instructions.append(Instruction(line))
+                    instructions.append(Instruction(line))
+        return instructions
 
     def make_a_turn(self):
         pass

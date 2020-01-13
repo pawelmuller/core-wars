@@ -7,7 +7,7 @@ def DAT(modifier, A, B, type_A, type_B):
 
 def MOV(modifier, A, B, type_A, type_B):
     '''MOV -- move (copies data from one address to another)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
@@ -201,16 +201,16 @@ class Instruction:
         """
         Creates Instruction object.
         """
+        self._instruction = instruction
+        self._modifier = modifier
+        self._A = A
+        self._B = B
+        self._type_A = type_A
+        self._type_B = type_B
+
         if line:
             self._line = line
             self.convert(line)
-        else:
-            self._instruction = instruction
-            self._modifier = modifier
-            self._A = A
-            self._B = B
-            self._type_A = type_A
-            self._type_B = type_B
 
     def convert(self, line):
         """
