@@ -2,7 +2,7 @@
 
 # from Redcode import Instructions as Ins
 # from sys import argv
-from Redcode import Instruction
+# from Redcode import Instruction
 
 
 def blablabla():
@@ -42,11 +42,14 @@ if __name__ == "__main__":
     str_instruction = str_instruction.lstrip()
     instruction = str_instruction[0:3].upper()
     print(str_instruction)
-    print(instruction)'''
+    print(instruction)
 
     default = Instruction(None)
     test = Instruction(None)
     if test == default:
         print("True")
     else:
-        print("False")
+        print("False")'''
+
+    line = "ADD.TY 4, 3"
+    print(line[1:])

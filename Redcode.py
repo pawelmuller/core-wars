@@ -216,15 +216,47 @@ class Instruction:
         """
         Converts Redcode file line into Instruction object.
         """
-        str_instruction = line.split(';', maxsplit=1)
-        str_instruction = str_instruction[0].lstrip()
-        self._instruction = str_instruction[0:3].upper()
-        # TO DO:
-        # self._modifier = modifier.upper()  # to-do: wycina modifier
-        # self._type_A = "#"  # to-do: wycina typ adresowania A
-        self._A = 0  # to-do: wycina A
-        # self._type_B = "#"  # to-do: wycina typ adresowania B
-        self._B = 0  # to-do: wycina B
+        line = line.upper()
+        line = line.strip()
+
+        # in_str - instruction string
+
+        # Looking for instruction:
+        in_str = line.split(';', maxsplit=1)
+        in_str = in_str[0]
+        self._instruction = in_str[0:3]
+
+        # Looking for modifier:
+        if '.' in in_str:
+            in_str = in_str.split('.')
+            in_str = in_str[1]
+            in_str = in_str.split(' ', maxsplit=1)
+            self._modifier = in_str[0]
+            in_str = in_str[1]
+        else:
+            in_str = in_str.split(' ', maxsplit=1)
+            in_str = in_str[1]
+
+        # Looking for variables:
+        if ',' in in_str:
+            in_str = in_str.split(',')
+
+            # Addressing modes:
+            A = in_str[0].strip()
+            if A.isdigit():
+                self._A = int(A)
+            else:
+                self._type_A = A[0]
+                self._A = int(A[1:])
+
+            B = in_str[1].strip()
+            if B.isdigit():
+                self._B = int(B)
+            else:
+                self._type_B = B[0]
+                self._B = int(B[1:])
+        else:
+            self._A = int(in_str.strip())
 
     def compare(self, other):
         """
