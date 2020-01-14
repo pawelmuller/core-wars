@@ -9,9 +9,9 @@ if __name__ == "__main__":
                         help="Set the core size.", default=8000)
     parser.add_argument("-cyclelimit", type=int,
                         help="Cycles to run until tie.", default=10000)
-    parser.add_argument("-display", type=bool,
+    '''parser.add_argument("-display", type=bool,
                         help="Choose whether to use Terminal or pygame.",
-                        default=False)  # False - terminal
+                        default=False)  # False - terminal'''
     parser.add_argument("warriors", type=str, nargs="*",
                         help="Path to at least two warriors.")
 
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     # Core simulation
     core = MARS(arguments.coresize, arguments.cyclelimit, warriors)
     core.prepare_for_simulation()
-    core.simulate(arguments.display)
+    core.simulate()
 
     # Game results (will show the results)
-    core.results(arguments.display)
+    core.results()

@@ -4,9 +4,25 @@ from Redcode import Instruction
 class Warrior:
     def __init__(self, path_to_file):
         self._path_to_file = path_to_file
+
+        # Warrior name:
+        if "/" in path_to_file:
+            self.name = path_to_file.split("/")[-1]
+        else:
+            self.name = path_to_file
+        self.name = self.name.split('.')[0]
+
         self._instructions = self._import_from_file(path_to_file)
         self._length = len(self._instructions)
-        self._process_queue = []  # List of indexes of different processes
+        # List of indexes of different processes
+        # (last on the list - first to run):
+        self._process_queue = []
+        self.alive = True
+
+    def __repr__(self):
+        return self.name
+
+    # File handling:
 
     def _validate_line(self, line):
         """
@@ -39,26 +55,44 @@ class Warrior:
         with open(path_to_file, "r") as file:
             for line in file:
                 if self._validate_line(line) is True:
-                    instructions.append(Instruction(line))
+                    instructions.append(Instruction(line, warrior=self))
         return instructions
 
-    def make_a_turn(self):
-        pass
+    # Game elements:
 
-    def change_process(self):
-        pass
+    def make_a_turn(self, core):
+        """
+        Performs a warrior turn and checks if warrior is still alive.
+        Returns True if successful.
 
-    def add_process(self, index):
+        Attributes:
+        :param core: MARS
+        :type core: list
+        """
+        current_process_index = self._process_queue.pop()
+        core[current_process_index].run(self)
+        if len(self._process_queue) <= 0:
+            self.alive = False
+        return True
+
+    def add_new_process(self, index):
         """
         Adds new process to warrior.
-        Puts it right after current one.
+        Puts it at 0 index of _process_queue list.
         """
-        current_process_id = self._process_queue.index(self._current_process)
-        self._process_queue.insert(current_process_id, index)  # TESTOWAC
+        self._process_queue.insert(0, index)
         pass
 
-    def end_process(self):
+    def end_current_process(self):
+        """
+        Ends current process of the warrior.
+        Deletes it from the _process_queue list.
+        """
+        process = self._process_queue[-1]
+        self._process_queue.remove(process)
         pass
+
+    # Getters and setters:
 
     def get_instructions(self):
         return self._instructions

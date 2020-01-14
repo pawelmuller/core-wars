@@ -49,7 +49,19 @@ if __name__ == "__main__":
     if test == default:
         print("True")
     else:
-        print("False")'''
+        print("False")
 
     line = "ADD.TY 4, 3"
     print(line[1:])
+
+    lista = [0, 1, 2, 3, 4, 5, 6, 7]
+    x = 4
+    x = lista.index(x) + 1
+    lista.insert(x % len(lista), "X")
+    print(lista)
+    print(lista[-1])
+
+    line = "Warriors/Imp_1.red"
+    line2 = "Imp_2.red"
+    print(line.split("/")[1])
+    print(line2.split("/")[1])'''

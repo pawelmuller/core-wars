@@ -1,124 +1,124 @@
 # Redcode instructions:
-def DAT(modifier, A, B, type_A, type_B):
+def DAT(modifier, A, B, type_A, type_B, warrior):
     '''DAT -- data (kills the process)'''
     # Modifiers[modifier](A, B) - modifiers don't affect DAT
     pass
 
 
-def MOV(modifier, A, B, type_A, type_B):
+def MOV(modifier, A, B, type_A, type_B, warrior):
     '''MOV -- move (copies data from one address to another)'''
     # Modifiers[modifier](A, B)
     pass
 
 
-def ADD(modifier, A, B, type_A, type_B):
+def ADD(modifier, A, B, type_A, type_B, warrior):
     '''ADD -- add (adds one number to another)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
-def SUB(modifier, A, B, type_A, type_B):
+def SUB(modifier, A, B, type_A, type_B, warrior):
     '''SUB -- subtract (subtracts one number from another)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
-def MUL(modifier, A, B, type_A, type_B):
+def MUL(modifier, A, B, type_A, type_B, warrior):
     '''MUL -- multiply (multiplies one number with another)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
-def DIV(modifier, A, B, type_A, type_B):
+def DIV(modifier, A, B, type_A, type_B, warrior):
     '''DIV -- divide (divides one number with another)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
-def MOD(modifier, A, B, type_A, type_B):
+def MOD(modifier, A, B, type_A, type_B, warrior):
     '''MOD -- modulus (divides one number with another
     and gives the remainder)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
-def JMP(modifier, A, B, type_A, type_B):
+def JMP(modifier, A, B, type_A, type_B, warrior):
     '''JMP -- jump (continues execution from another address)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
-def JMZ(modifier, A, B, type_A, type_B):
+def JMZ(modifier, A, B, type_A, type_B, warrior):
     '''JMZ -- jump if zero (tests a number and jumps
     to an address if it's 0)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
-def JMN(modifier, A, B, type_A, type_B):
+def JMN(modifier, A, B, type_A, type_B, warrior):
     '''JMN -- jump if not zero (tests a number and
     jumps if it isn't 0)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
-def DJN(modifier, A, B, type_A, type_B):
+def DJN(modifier, A, B, type_A, type_B, warrior):
     '''DJN -- decrement and jump if not zero (decrements a number
     by one, and jumps unless the result is 0)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
-def SPL(modifier, A, B, type_A, type_B):
+def SPL(modifier, A, B, type_A, type_B, warrior):
     '''SPL -- split (starts a second process at another address)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
-def CMP(modifier, A, B, type_A, type_B):
+def CMP(modifier, A, B, type_A, type_B, warrior):
     '''CMP -- compare (same as SEQ)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
-def SEQ(modifier, A, B, type_A, type_B):
+def SEQ(modifier, A, B, type_A, type_B, warrior):
     '''SEQ -- skip if equal (compares two instructions, and skips the next
     instruction if they are equal)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
-def SNE(modifier, A, B, type_A, type_B):
+def SNE(modifier, A, B, type_A, type_B, warrior):
     '''SNE -- skip if not equal (compares two instructions, and skips the next
     instruction if they aren't equal)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
-def SLT(modifier, A, B, type_A, type_B):
+def SLT(modifier, A, B, type_A, type_B, warrior):
     '''SLT -- skip if lower than (compares two values, and skips the
     next instruction if the first is lower than the second)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
 '''
-def LDP(modifier, A, B, type_A, type_B):
+def LDP(modifier, A, B, type_A, type_B, warrior):
     ''''LDP -- load from p-space (loads a number from private storage space)''''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
-def STP(modifier, A, B, type_A, type_B):
+def STP(modifier, A, B, type_A, type_B, warrior):
     ''''STP -- save to p-space (saves a number to private storage space)''''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 '''
 
 
-def NOP(modifier, A, B, type_A, type_B):
+def NOP(modifier, A, B, type_A, type_B, warrior):
     '''NOP -- no operation (does nothing)'''
-    Modifiers[modifier](A, B)
+    # Modifiers[modifier](A, B)
     pass
 
 
@@ -197,7 +197,7 @@ Modifiers = {
 
 class Instruction:
     def __init__(self, line, instruction=None, modifier=None,
-                 A=None, B=None, type_A="$", type_B="$"):
+                 A=None, B=None, type_A="$", type_B="$", warrior=None):
         """
         Creates Instruction object.
         """
@@ -207,6 +207,7 @@ class Instruction:
         self._B = B
         self._type_A = type_A
         self._type_B = type_B
+        self._warrior = warrior
 
         if line:
             self._line = line
@@ -222,7 +223,7 @@ class Instruction:
             output += self._type_A + str(self._A)
         else:
             output += str(self._A)
-        if self._B:
+        if self._B is not None:
             output += " "
             if self._type_B:
                 output += self._type_B + str(self._B)
@@ -300,9 +301,10 @@ class Instruction:
         """Sets instruction index (absolute location in core)."""
         self._index = index
 
-    def run(self):
+    def run(self, warrior):
         """
         Runs the instruction.
         """
         Instructions[self._instruction](self._modifier, self._A, self._B,
-                                        self._type_A, self._type_B)
+                                        self._type_A, self._type_B,
+                                        warrior=warrior)

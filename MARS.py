@@ -68,16 +68,43 @@ class MARS():
             warrior.set_absolute_start(index)
 
     def prepare_for_simulation(self):
+        """
+        Prepares MARS for simulation.
+        """
         self._place_warriors(self._warriors)
 
-    def perform_cycle(self):  # Do rozwazenia
+    def _perform_cycle(self):
+        """
+        Performs one cycle of game:
+        each warrior executes its current process and runs instruction.
+
+        If cycle was successful: return True
+        If warrior lost all of its processes: returns False
+        """
         for warrior in self._playing_warriors:
-            warrior.make_a_turn()
+            warrior.make_a_turn(self._MARS)
+            if warrior.alive:
+                continue
+            else:
+                self._playing_warriors.remove(warrior)
+                return False
+        return True
 
     def simulate(self, display):
-        pass
+        self._cycle_count = 0
+        while self._cycle_count <= self._cycle_limit:
+            if self._perform_cycle():
+                continue
+            else:
+                break
+        for warrior in self._warriors:
+            if warrior.alive:
+                self._winner = warrior
+            else:
+                self._loser = warrior
+        return True
 
-    def results(self, display):
+    def results(self):
         # Results
         pass
 
