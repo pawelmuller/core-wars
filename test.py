@@ -64,4 +64,11 @@ if __name__ == "__main__":
     line = "Warriors/Imp_1.red"
     line2 = "Imp_2.red"
     print(line.split("/")[1])
-    print(line2.split("/")[1])'''
+    print(line2.split("/")[1])
+
+    test = []
+    print(test.pop())
+
+    x = 15
+    # del x
+    print(x)'''

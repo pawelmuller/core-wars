@@ -1,200 +1,3 @@
-# Redcode instructions:
-def DAT(modifier, A, B, type_A, type_B, warrior):
-    '''DAT -- data (kills the process)'''
-    # Modifiers[modifier](A, B) - modifiers don't affect DAT
-    pass
-
-
-def MOV(modifier, A, B, type_A, type_B, warrior):
-    '''MOV -- move (copies data from one address to another)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def ADD(modifier, A, B, type_A, type_B, warrior):
-    '''ADD -- add (adds one number to another)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def SUB(modifier, A, B, type_A, type_B, warrior):
-    '''SUB -- subtract (subtracts one number from another)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def MUL(modifier, A, B, type_A, type_B, warrior):
-    '''MUL -- multiply (multiplies one number with another)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def DIV(modifier, A, B, type_A, type_B, warrior):
-    '''DIV -- divide (divides one number with another)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def MOD(modifier, A, B, type_A, type_B, warrior):
-    '''MOD -- modulus (divides one number with another
-    and gives the remainder)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def JMP(modifier, A, B, type_A, type_B, warrior):
-    '''JMP -- jump (continues execution from another address)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def JMZ(modifier, A, B, type_A, type_B, warrior):
-    '''JMZ -- jump if zero (tests a number and jumps
-    to an address if it's 0)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def JMN(modifier, A, B, type_A, type_B, warrior):
-    '''JMN -- jump if not zero (tests a number and
-    jumps if it isn't 0)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def DJN(modifier, A, B, type_A, type_B, warrior):
-    '''DJN -- decrement and jump if not zero (decrements a number
-    by one, and jumps unless the result is 0)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def SPL(modifier, A, B, type_A, type_B, warrior):
-    '''SPL -- split (starts a second process at another address)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def CMP(modifier, A, B, type_A, type_B, warrior):
-    '''CMP -- compare (same as SEQ)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def SEQ(modifier, A, B, type_A, type_B, warrior):
-    '''SEQ -- skip if equal (compares two instructions, and skips the next
-    instruction if they are equal)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def SNE(modifier, A, B, type_A, type_B, warrior):
-    '''SNE -- skip if not equal (compares two instructions, and skips the next
-    instruction if they aren't equal)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def SLT(modifier, A, B, type_A, type_B, warrior):
-    '''SLT -- skip if lower than (compares two values, and skips the
-    next instruction if the first is lower than the second)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-'''
-def LDP(modifier, A, B, type_A, type_B, warrior):
-    ''''LDP -- load from p-space (loads a number from private storage space)''''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-def STP(modifier, A, B, type_A, type_B, warrior):
-    ''''STP -- save to p-space (saves a number to private storage space)''''
-    # Modifiers[modifier](A, B)
-    pass
-'''
-
-
-def NOP(modifier, A, B, type_A, type_B, warrior):
-    '''NOP -- no operation (does nothing)'''
-    # Modifiers[modifier](A, B)
-    pass
-
-
-# Modifiers:
-def mod_A():
-    '''A -- moves the A of the source into the A of the destination'''
-    pass
-
-
-def mod_B():
-    '''B -- moves the B of the source into the B of the destination'''
-    pass
-
-
-def mod_AB():
-    '''AB -- moves the A of the source into the B of the destination'''
-    pass
-
-
-def mod_BA():
-    '''BA -- moves the B of the source into the A of the destination'''
-    pass
-
-
-def mod_F():
-    '''F -- moves AB of the source into the AB in the destination'''
-    pass
-
-
-def mod_X():
-    '''X -- moves AB of the source into the BA in the destination'''
-    pass
-
-
-def mod_I():
-    '''I -- moves the whole source instruction into the destination'''
-    pass
-
-
-# Instructions dictionary:
-Instructions = {
-    "DAT": DAT,
-    "MOV": MOV,
-    "ADD": ADD,
-    "SUB": SUB,
-    "MUL": MUL,
-    "DIV": DIV,
-    "MOD": MOD,
-    "JMP": JMP,
-    "JMZ": JMZ,
-    "JMN": JMN,
-    "DJN": DJN,
-    "SPL": SPL,
-    "CMP": CMP,
-    "SEQ": SEQ,
-    "SNE": SNE,
-    "SLT": SLT,
-    '''
-    "LDP": LDP,
-    "STP": STP,
-    '''
-    "NOP": NOP
-}
-
-# Modifiers dictionary:
-Modifiers = {
-    "A": mod_A,
-    "B": mod_B,
-    "AB": mod_AB,
-    "BA": mod_BA,
-    "F": mod_F,
-    "X": mod_X,
-    "I": mod_I
-}
-
-
 class Instruction:
     def __init__(self, line, instruction=None, modifier=None,
                  A=None, B=None, type_A="$", type_B="$", warrior=None):
@@ -210,12 +13,46 @@ class Instruction:
         self._warrior = warrior
 
         if line:
-            self._line = line
             self.convert(line)
 
+        # Instructions dictionary:
+        self.Redcode_Instructions = {
+            "DAT": self.DAT,
+            "MOV": self.MOV,
+            "ADD": self.ADD,
+            "SUB": self.SUB,
+            "MUL": self.MUL,
+            "DIV": self.DIV,
+            "MOD": self.MOD,
+            "JMP": self.JMP,
+            "JMZ": self.JMZ,
+            "JMN": self.JMN,
+            "DJN": self.DJN,
+            "SPL": self.SPL,
+            "CMP": self.CMP,
+            "SEQ": self.SEQ,
+            "SNE": self.SNE,
+            "SLT": self.SLT,
+            "NOP": self.NOP
+        }
+
+        # Modifiers dictionary:
+        '''self.Modifiers = {
+            "A": self.mod_A,
+            "B": self.mod_B,
+            "AB": self.mod_AB,
+            "BA": self.mod_BA,
+            "F": self.mod_F,
+            "X": self.mod_X,
+            "I": self.mod_I
+        }'''
+
     def __repr__(self):
-        """Represents Instruction object."""
-        output = self._instruction
+        """
+        Represents Instruction object.
+        """
+        output = f"ID: {id(self)}, "
+        output += self._instruction
         if self._modifier:
             output += "." + self._modifier
         output += " "
@@ -276,6 +113,15 @@ class Instruction:
                 self._B = int(B[1:])
         else:
             self._A = int(in_str.strip())
+        return True
+
+    def copy(self):
+        """
+        Returns new object with the same parameters as self.
+        """
+        return Instruction(None, self._instruction, self._modifier,
+                           self._A, self._B, self._type_A, self._type_B,
+                           self._warrior)
 
     def compare(self, other):
         """
@@ -297,14 +143,169 @@ class Instruction:
         else:
             return True
 
-    def set_index(self, index):
-        """Sets instruction index (absolute location in core)."""
-        self._index = index
+    def update_index(self):
+        """
+        Updates instruction index (absolute location in core).
+        """
+        core = self._core
+        self._index = core.get_index(self)
+        return True
 
-    def run(self, warrior):
+    def attach_core(self, core):
+        """
+        Updates link to MARS.
+        """
+        self._core = core
+        return True
+
+    def attach_warrior(self, warrior):
+        """
+        Updates link to its parent warrior.
+        """
+        self._warrior = warrior
+        return True
+
+    def run(self):
         """
         Runs the instruction.
         """
-        Instructions[self._instruction](self._modifier, self._A, self._B,
-                                        self._type_A, self._type_B,
-                                        warrior=warrior)
+        self.Redcode_Instructions[self._instruction]()
+        return True
+
+    # Handling Redcode instructions:
+    def DAT(self):
+        '''DAT -- data (kills the process)'''
+        # Modifiers[modifier](A, B) - modifiers don't affect DAT
+        pass
+
+    def MOV(self):
+        '''
+        MOV -- move (copies data from one address to another)
+        '''
+        # Modifiers[modifier](A, B)
+        index = self._index
+        core = self._core
+        core_size = len(core)
+
+        A_abs = (self._A + index) % core_size
+        B_abs = (self._B + index) % core_size
+
+        core[B_abs] = core[A_abs].copy()
+        new_index = (index + 1) % core_size
+        core[B_abs].attach_core(core)
+        core[B_abs].update_index()
+
+        warrior = self._warrior
+        warrior.add_process(new_index)
+
+    def ADD(self):
+        '''ADD -- add (adds one number to another)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    def SUB(self):
+        '''SUB -- subtract (subtracts one number from another)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    def MUL(self):
+        '''MUL -- multiply (multiplies one number with another)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    def DIV(self):
+        '''DIV -- divide (divides one number with another)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    def MOD(self):
+        '''MOD -- modulus (divides one number with another
+        and gives the remainder)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    def JMP(self):
+        '''JMP -- jump (continues execution from another address)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    def JMZ(self):
+        '''JMZ -- jump if zero (tests a number and jumps
+        to an address if it's 0)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    def JMN(self):
+        '''JMN -- jump if not zero (tests a number and
+        jumps if it isn't 0)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    def DJN(self):
+        '''DJN -- decrement and jump if not zero (decrements a number
+        by one, and jumps unless the result is 0)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    def SPL(self):
+        '''SPL -- split (starts a second process at another address)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    def CMP(self):
+        '''CMP -- compare (same as SEQ)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    def SEQ(self):
+        '''SEQ -- skip if equal (compares two instructions, and skips the next
+        instruction if they are equal)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    def SNE(self):
+        '''SNE -- skip if not equal (compares two instructions, and skips the next
+        instruction if they aren't equal)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    def SLT(self):
+        '''SLT -- skip if lower than (compares two values, and skips the
+        next instruction if the first is lower than the second)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    def NOP(self):
+        '''NOP -- no operation (does nothing)'''
+        # Modifiers[modifier](A, B)
+        pass
+
+    # Modifiers:
+
+    def mod_A(self):
+        '''A -- moves the A of the source into the A of the destination'''
+        pass
+
+    def mod_B(self):
+        '''B -- moves the B of the source into the B of the destination'''
+        pass
+
+    def mod_AB(self):
+        '''AB -- moves the A of the source into the B of the destination'''
+        pass
+
+    def mod_BA(self):
+        '''BA -- moves the B of the source into the A of the destination'''
+        pass
+
+    def mod_F(self):
+        '''F -- moves AB of the source into the AB in the destination'''
+        pass
+
+    def mod_X(self):
+        '''X -- moves AB of the source into the BA in the destination'''
+        pass
+
+    def mod_I(self):
+        '''I -- moves the whole source instruction into the destination'''
+        pass
