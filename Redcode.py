@@ -1,3 +1,7 @@
+from Validating_tools import WrongInstruction, WrongModifier
+from Validating_tools import WrongAddressingMode
+
+
 class Instruction:
     def __init__(self, line, instruction=None, modifier=None,
                  A=None, B=None, type_A="$", type_B="$", warrior=None):
@@ -37,7 +41,7 @@ class Instruction:
         }
 
         # Modifiers dictionary:
-        '''self.Modifiers = {
+        self.Redcode_Modifiers = {
             "A": self.mod_A,
             "B": self.mod_B,
             "AB": self.mod_AB,
@@ -45,7 +49,21 @@ class Instruction:
             "F": self.mod_F,
             "X": self.mod_X,
             "I": self.mod_I
-        }'''
+        }
+
+        # Addressing modes dictionary:
+        self.Redcode_Addressing_Modes = {
+            "#": self.immediate,
+            "$":  self.direct,
+            "*":  self.A_indirect,
+            "@":  self.B_indirect,
+            "{":  self.A_predecrement,
+            "<":  self.B_predecrement,
+            "}":  self.A_postincrement,
+            ">":  self.B_postincrement
+        }
+
+        self._validate_instruction()
 
     def __repr__(self):
         """
@@ -67,6 +85,34 @@ class Instruction:
             else:
                 output += str(self._B)
         return output
+
+    def _validate_instruction(self):
+        if self._instruction not in self.Redcode_Instructions:
+            error_msg = f"{self._instruction} instruction doesn't exist."
+            raise WrongInstruction(error_msg)
+        if self._modifier is not None:
+            if self._modifier not in self.Redcode_Modifiers:
+                error_msg = f"{self._modifier} modifier doesn't exist."
+                raise WrongModifier(error_msg)
+        if self._A is not None:
+            try:
+                int(self._A)
+            except ValueError:
+                error_msg = "A variable should be an integer."
+                raise ValueError(error_msg)
+        if self._B is not None:
+            try:
+                int(self._B)
+            except ValueError:
+                error_msg = "B variable should be an integer."
+                raise ValueError(error_msg)
+        if self._type_A not in self.Redcode_Addressing_Modes:
+            error_msg = f"{self._type_A} addressing mode doesn't exist."
+            raise WrongAddressingMode(error_msg)
+        if self._type_B not in self.Redcode_Addressing_Modes:
+            error_msg = f"{self._type_B} addressing mode doesn't exist."
+            raise WrongAddressingMode(error_msg)
+        return
 
     def convert(self, line):
         """
@@ -329,4 +375,30 @@ class Instruction:
 
     def mod_I(self):
         '''I -- moves the whole source instruction into the destination'''
+        pass
+
+    # Addressing modes:
+
+    def immediate(self):
+        pass
+
+    def direct(self):
+        pass
+
+    def A_indirect(self):
+        pass
+
+    def B_indirect(self):
+        pass
+
+    def A_predecrement(self):
+        pass
+
+    def B_predecrement(self):
+        pass
+
+    def A_postincrement(self):
+        pass
+
+    def B_postincrement(self):
         pass

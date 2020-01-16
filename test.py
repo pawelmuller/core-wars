@@ -72,3 +72,15 @@ if __name__ == "__main__":
     x = 15
     # del x
     print(x)'''
+
+    Redcode_Instructions = {
+        "DAT": 123,
+        "MOV": 123,
+        "ADD": 432,
+        "SUB": 65,
+        "MUL": 7,
+        "DIV": 3,
+        "MOD": 6,
+    }
+    if "MOD" in Redcode_Instructions:
+        print("No tak")
