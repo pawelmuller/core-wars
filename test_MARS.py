@@ -1,16 +1,15 @@
-# import pytest
+import pytest
 from MARS import MARS
 from warrior import Warrior
 from Redcode import Instruction
 
 
-'''def test_validate_warriors():
+def test_validate_warriors():
     test_warriors = [
         Warrior("Warriors/Dwarf.red") for i in range(100)
     ]
-    test_core = MARS(100, 100, test_warriors)
     with pytest.raises(Exception):
-        test_core._validate_warriors()'''
+        MARS(100, 100, test_warriors)
 
 
 def test_find_a_place():
