@@ -26,6 +26,14 @@ def test_Instruction_convert():
     assert instruction4._B == 15
     assert instruction4._type_B == "#"
 
+    instruction5 = Instruction("   DAT %17777")
+    assert instruction5._instruction == "DAT"
+    assert instruction5._modifier is None
+    assert instruction5._A is None
+    assert instruction5._type_A == "$"
+    assert instruction5._B == 17777
+    assert instruction5._type_B == "%"
+
 
 def test_Instruction_compare():
     instruction1 = Instruction("ADD.I 4, 3")

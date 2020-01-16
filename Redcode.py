@@ -101,6 +101,8 @@ class Instruction:
             A = in_str[0].strip()
             if A.isdigit():
                 self._A = int(A)
+            elif A[0] == "-":
+                self._A = int(A)
             else:
                 self._type_A = A[0]
                 self._A = int(A[1:])
@@ -108,11 +110,30 @@ class Instruction:
             B = in_str[1].strip()
             if B.isdigit():
                 self._B = int(B)
+            elif B[0] == "-":
+                self._B = int(B)
             else:
                 self._type_B = B[0]
                 self._B = int(B[1:])
         else:
-            self._A = int(in_str.strip())
+            variable = in_str.strip()
+            if variable.isdigit():
+                if self._instruction == "DAT":
+                    self._B = int(variable)
+                else:
+                    self._A = int(variable)
+            elif variable[0] == "-":
+                if self._instruction == "DAT":
+                    self._B = int(variable)
+                else:
+                    self._A = int(variable)
+            else:
+                if self._instruction == "DAT":
+                    self._type_B = variable[0]
+                    self._B = int(variable[1:])
+                else:
+                    self._type_A = variable[0]
+                    self._A = int(variable[1:])
         return True
 
     def copy(self):
