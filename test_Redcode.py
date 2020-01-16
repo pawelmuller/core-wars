@@ -35,9 +35,3 @@ def test_Instruction_compare():
     instruction3 = Instruction("      JMP.A   -4")
     instruction4 = Instruction("      JMP.A   -4")
     assert instruction3.compare(instruction4)
-
-
-def test_Instruction_set_index():
-    instruction = Instruction("ADD.I #4, 3")
-    instruction.set_index(5)
-    assert instruction._index == 5
