@@ -19,6 +19,9 @@ class Instruction:
         if line:
             self.convert(line)
 
+        if not self._modifier:
+            self._set_default_modifier()
+
         # Instructions dictionary:
         self.Redcode_Instructions = {
             "DAT": self.DAT,
@@ -232,6 +235,36 @@ class Instruction:
         self._warrior = warrior
         return True
 
+    def _set_default_modifier(self):
+        """
+        If instruction modifier doesn't exist, the method adds default one.
+        """
+        instruction = self._instruction
+        if instruction in ["DAT", "NOP"]:
+            self._modifier = "F"
+        elif instruction in ["MOV", "SEQ", "SNE", "CMP"]:
+            if self._type_A == "#":
+                self._modifier = "AB"
+            elif self._type_B == "#":
+                self._modifier = "B"
+            else:
+                self._modifier = "I"
+        elif instruction in ["ADD", "SUB", "MUL", "DIV", "MOD"]:
+            if self._type_A == "#":
+                self._modifier = "AB"
+            elif self._type_B == "#":
+                self._modifier = "B"
+            else:
+                self._modifier = "F"
+        elif instruction in ["SLT", "LDP", "STP"]:
+            if self._type_A == "#":
+                self._modifier = "AB"
+            else:
+                self._modifier = "B"
+        elif instruction in ["JMP", "JMZ", "JMN", "DJN", "SPL"]:
+            self._modifier = "B"
+        return True
+
     def run(self):
         """
         Runs the instruction.
@@ -242,7 +275,6 @@ class Instruction:
     # Handling Redcode instructions:
     def DAT(self):
         '''DAT -- data (kills the process)'''
-        # Modifiers[modifier](A, B) - modifiers don't affect DAT
         pass
 
     def MOV(self):
