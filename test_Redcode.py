@@ -1,6 +1,6 @@
 from Redcode import Instruction
-from Validating_tools import WrongOpcode, WrongModifier
-from Validating_tools import WrongAddressingMode
+from Validating_tools import WrongOpcodeError, WrongModifierError
+from Validating_tools import WrongAddressingModeError
 import pytest
 
 
@@ -82,17 +82,17 @@ def test_instruction_set_default_modifier():
 
 
 def test_Instruction_validate():
-    with pytest.raises(WrongOpcode):
+    with pytest.raises(WrongOpcodeError):
         Instruction("BLA.I 4, 3")
-    with pytest.raises(WrongModifier):
+    with pytest.raises(WrongModifierError):
         Instruction("MOV.CCC 4, 3")
     with pytest.raises(ValueError):
         Instruction("MOV $, 3")
-    with pytest.raises(WrongAddressingMode):
+    with pytest.raises(WrongAddressingModeError):
         Instruction("MOV %5, 3")
-    with pytest.raises(WrongAddressingMode):
+    with pytest.raises(WrongAddressingModeError):
         Instruction("MOV @5, 3")
-    with pytest.raises(WrongAddressingMode):
+    with pytest.raises(WrongAddressingModeError):
         Instruction("MOV 5, *3")
 
 

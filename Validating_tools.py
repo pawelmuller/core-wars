@@ -1,40 +1,40 @@
-class InstructionNotValid(Exception):
+class InstructionNotValidError(Exception):
     pass
 
 
-class WrongOpcode(InstructionNotValid):
+class WrongOpcodeError(InstructionNotValidError):
     """
     Raised when opcode doesn't exist.
     """
     pass
 
 
-class WrongModifier(InstructionNotValid):
+class WrongModifierError(InstructionNotValidError):
     """
     Raised when modifier doesn't exist.
     """
     pass
 
 
-class WrongAddressingMode(InstructionNotValid):
+class WrongAddressingModeError(InstructionNotValidError):
     """
     Raised when addressing mode doesn't exist.
     """
     pass
 
 
-class WarriorNotValid(Exception):
+class WarriorNotValidError(Exception):
     pass
 
 
-class NoWarriors(WarriorNotValid):
+class NoWarriorsError(WarriorNotValidError):
     """
     Raised when there are no warriors given.
     """
     pass
 
 
-class WarriorSize(WarriorNotValid):
+class WarriorSizeError(WarriorNotValidError):
     """
     Raised when there are no warriors given.
     """

@@ -1,5 +1,5 @@
-from Validating_tools import WrongOpcode, WrongModifier
-from Validating_tools import WrongAddressingMode
+from Validating_tools import WrongOpcodeError, WrongModifierError
+from Validating_tools import WrongAddressingModeError
 
 
 class Instruction:
@@ -96,11 +96,11 @@ class Instruction:
     def _validate_instruction(self):
         if self._opcode not in self.Redcode_Opcodes:
             error_msg = f"{self._opcode} instruction doesn't exist."
-            raise WrongOpcode(error_msg)
+            raise WrongOpcodeError(error_msg)
         if self._modifier is not None:
             if self._modifier not in self.Redcode_Modifiers:
                 error_msg = f"{self._modifier} modifier doesn't exist."
-                raise WrongModifier(error_msg)
+                raise WrongModifierError(error_msg)
         if self._A is not None:
             try:
                 int(self._A)
@@ -115,16 +115,16 @@ class Instruction:
                 raise ValueError(error_msg)
         if self._type_A not in self.Redcode_Addressing_Modes:
             error_msg = f"{self._type_A} addressing mode doesn't exist."
-            raise WrongAddressingMode(error_msg)
+            raise WrongAddressingModeError(error_msg)
         if self._type_B not in self.Redcode_Addressing_Modes:
             error_msg = f"{self._type_B} addressing mode doesn't exist."
-            raise WrongAddressingMode(error_msg)
+            raise WrongAddressingModeError(error_msg)
         if self._type_A == "@":
             error_msg = f"A-type mustn't be '@'. It's reserved for B-one only."
-            raise WrongAddressingMode(error_msg)
+            raise WrongAddressingModeError(error_msg)
         if self._type_B == "*":
             error_msg = f"B-type mustn't be '*'. It's reserved for A-one only."
-            raise WrongAddressingMode(error_msg)
+            raise WrongAddressingModeError(error_msg)
         return
 
     def _set_default_modifier(self):

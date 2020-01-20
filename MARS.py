@@ -1,6 +1,6 @@
 from Redcode import Instruction
 from random import randint
-from Validating_tools import NoWarriors, WarriorSize
+from Validating_tools import NoWarriorsError, WarriorSizeError
 
 
 class MARS():
@@ -41,7 +41,7 @@ class MARS():
         Raises Exception if not.
         """
         if len(self._warriors) == 0:
-            raise NoWarriors("No warriors given.")
+            raise NoWarriorsError("No warriors given.")
             return
         warriors_length = 0
         for warrior in self._warriors:
@@ -49,10 +49,10 @@ class MARS():
         if warriors_length > len(self):
             error_msg = "Summed length of warriors is "
             error_msg += "greater than size of the core."
-            raise WarriorSize(error_msg)
+            raise WarriorSizeError(error_msg)
             return
         if warriors_length == 0:
-            raise WarriorSize("Warriors are empty.")
+            raise WarriorSizeError("Warriors are empty.")
             return
 
     def _find_a_place(self, warrior):
