@@ -91,8 +91,16 @@ class Warrior:
         current_process_index = self._process_queue.pop()
         current_process_index %= core_size
         instruction = core[current_process_index]
-        instruction.run()
-        return True
+        new_index = instruction.run()
+        if new_index:
+            if instruction.get_opcode == "SPL":
+                pass  # TODO
+            else:
+                new_process_index = (current_process_index + 1) % core_size
+                self.add_process(new_process_index)
+            return True
+        else:
+            return True
 
     def add_process(self, index):
         """

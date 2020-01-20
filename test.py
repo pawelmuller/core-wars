@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
     x = 15
     # del x
-    print(x)'''
+    print(x)
 
     Redcode_Instructions = {
         "DAT": 123,
@@ -84,3 +84,14 @@ if __name__ == "__main__":
     }
     if "MOD" in Redcode_Instructions:
         print("No tak")
+
+    lista = [0, 1, 2, 3, 4, 5, 6, 7]
+    new_process_index = None
+    if new_process_index:
+        lista.append(new_process_index)
+    print(lista)'''
+
+    x = 1
+    y = 1
+    if x == y == 1:
+        print("TAK")

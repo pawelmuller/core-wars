@@ -2,9 +2,9 @@ class InstructionNotValid(Exception):
     pass
 
 
-class WrongInstruction(InstructionNotValid):
+class WrongOpcode(InstructionNotValid):
     """
-    Raised when instruction doesn't exist.
+    Raised when opcode doesn't exist.
     """
     pass
 

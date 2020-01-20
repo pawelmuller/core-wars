@@ -1,14 +1,14 @@
-from Validating_tools import WrongInstruction, WrongModifier
+from Validating_tools import WrongOpcode, WrongModifier
 from Validating_tools import WrongAddressingMode
 
 
 class Instruction:
-    def __init__(self, line, instruction=None, modifier=None,
+    def __init__(self, line, opcode=None, modifier=None,
                  A=None, B=None, type_A="$", type_B="$", warrior=None):
         """
         Creates Instruction object.
         """
-        self._instruction = instruction
+        self._opcode = opcode
         self._modifier = modifier
         self._A = A
         self._B = B
@@ -22,8 +22,8 @@ class Instruction:
         if not self._modifier:
             self._set_default_modifier()
 
-        # Instructions dictionary:
-        self.Redcode_Instructions = {
+        # Opcodes dictionary:
+        self.Redcode_Opcodes = {
             "DAT": self.DAT,
             "MOV": self.MOV,
             "ADD": self.ADD,
@@ -43,16 +43,16 @@ class Instruction:
             "NOP": self.NOP
         }
 
-        # Modifiers dictionary:
-        self.Redcode_Modifiers = {
-            "A": self.mod_A,
-            "B": self.mod_B,
-            "AB": self.mod_AB,
-            "BA": self.mod_BA,
-            "F": self.mod_F,
-            "X": self.mod_X,
-            "I": self.mod_I
-        }
+        # Modifiers list:
+        self.Redcode_Modifiers = [
+            "A",
+            "B",
+            "AB",
+            "BA",
+            "F",
+            "X",
+            "I",
+        ]
 
         # Addressing modes dictionary:
         self.Redcode_Addressing_Modes = {
@@ -73,7 +73,7 @@ class Instruction:
         Represents Instruction object.
         """
         output = f"ID: {id(self)}, "
-        output += self._instruction
+        output += self._opcode
         if self._modifier:
             output += "." + self._modifier
         output += " "
@@ -89,10 +89,14 @@ class Instruction:
                 output += str(self._B)
         return output
 
+    def __set__(self, instance, value):
+        core = self._core
+        core[self._index] = value.copy()
+
     def _validate_instruction(self):
-        if self._instruction not in self.Redcode_Instructions:
-            error_msg = f"{self._instruction} instruction doesn't exist."
-            raise WrongInstruction(error_msg)
+        if self._opcode not in self.Redcode_Opcodes:
+            error_msg = f"{self._opcode} instruction doesn't exist."
+            raise WrongOpcode(error_msg)
         if self._modifier is not None:
             if self._modifier not in self.Redcode_Modifiers:
                 error_msg = f"{self._modifier} modifier doesn't exist."
@@ -127,29 +131,29 @@ class Instruction:
         """
         If instruction modifier doesn't exist, the method adds default one.
         """
-        instruction = self._instruction
-        if instruction in ["DAT", "NOP"]:
+        opcode = self._opcode
+        if opcode in ["DAT", "NOP"]:
             self._modifier = "F"
-        elif instruction in ["MOV", "SEQ", "SNE", "CMP"]:
+        elif opcode in ["MOV", "SEQ", "SNE", "CMP"]:
             if self._type_A == "#":
                 self._modifier = "AB"
             elif self._type_B == "#":
                 self._modifier = "B"
             else:
                 self._modifier = "I"
-        elif instruction in ["ADD", "SUB", "MUL", "DIV", "MOD"]:
+        elif opcode in ["ADD", "SUB", "MUL", "DIV", "MOD"]:
             if self._type_A == "#":
                 self._modifier = "AB"
             elif self._type_B == "#":
                 self._modifier = "B"
             else:
                 self._modifier = "F"
-        elif instruction in ["SLT", "LDP", "STP"]:
+        elif opcode in ["SLT", "LDP", "STP"]:
             if self._type_A == "#":
                 self._modifier = "AB"
             else:
                 self._modifier = "B"
-        elif instruction in ["JMP", "JMZ", "JMN", "DJN", "SPL"]:
+        elif opcode in ["JMP", "JMZ", "JMN", "DJN", "SPL"]:
             self._modifier = "B"
         return True
 
@@ -165,7 +169,7 @@ class Instruction:
         # Looking for instruction:
         in_str = line.split(';', maxsplit=1)
         in_str = in_str[0]
-        self._instruction = in_str[0:3]
+        self._opcode = in_str[0:3]
 
         # Looking for modifier:
         if '.' in in_str:
@@ -179,7 +183,7 @@ class Instruction:
             in_str = in_str[1]
 
         # Looking for variables:
-        if ',' in in_str:
+        if ',' in in_str:  # If true: two variables found
             in_str = in_str.split(',')
 
             # Addressing modes:
@@ -200,35 +204,33 @@ class Instruction:
             else:
                 self._type_B = B[0]
                 self._B = int(B[1:])
-        else:
+        else:  # One variable found
             variable = in_str.strip()
-            if variable.isdigit():
-                if self._instruction == "DAT":
-                    self._A = 0
-                    self._B = int(variable)
+            if self._opcode in ["JMP", "SPL", "NOP"]:
+                try:
+                    int(variable)
+                except ValueError:
+                    self._type_A = variable[0]
+                    self._A = int(variable[1:])
                 else:
                     self._A = int(variable)
-            elif variable[0] == "-" and variable[1:].isdigit():
-                if self._instruction == "DAT":
-                    self._A = 0
-                    self._B = int(variable)
-                else:
-                    self._A = int(variable)
-            else:
-                if self._instruction == "DAT":
-                    self._A = 0
+                self._B = 0
+            elif self._opcode == "DAT":
+                try:
+                    int(variable)
+                except ValueError:
                     self._type_B = variable[0]
                     self._B = int(variable[1:])
                 else:
-                    self._type_A = variable[0]
-                    self._A = int(variable[1:])
+                    self._B = int(variable)
+                self._A = 0
         return True
 
     def copy(self):
         """
         Returns new object with the same parameters as self.
         """
-        return Instruction(None, self._instruction, self._modifier,
+        return Instruction(None, self._opcode, self._modifier,
                            self._A, self._B, self._type_A, self._type_B,
                            self._warrior)
 
@@ -237,7 +239,7 @@ class Instruction:
         Compares two Instruction objects.
         Returns True if equal.
         """
-        if self._instruction != other._instruction:
+        if self._opcode != other._opcode:
             return False
         elif self._modifier != other._modifier:
             return False
@@ -274,18 +276,21 @@ class Instruction:
         self._warrior = warrior
         return True
 
+    def get_opcode(self):
+        """
+        Returns its opcode.
+        """
+        return self._opcode
+
     def run(self):
         """
         Runs the instruction.
         """
-        core = self._core
         A = self._A
         B = self._B
         source_index = self.Redcode_Addressing_Modes[self._type_A](A)
         destination_index = self.Redcode_Addressing_Modes[self._type_B](B)
-        source = core[source_index]
-        destination = core[destination_index]
-        self.Redcode_Instructions[self._instruction](source, destination)
+        self.Redcode_Opcodes[self._opcode](source_index, destination_index)
         return True
 
     # Addressing modes:
@@ -366,149 +371,312 @@ class Instruction:
         core[pointer]._B += 1
         return index
 
-    # Handling Redcode instructions:
-    def DAT(self):
+    # Handling Redcode opcodes:
+    def DAT(self, source_index, destination_index):
         '''DAT -- data (kills the process)'''
-        pass
+        return None
 
-    def MOV(self):
+    def MOV(self, source_index, destination_index):
         '''MOV -- move (copies data from one address to another)'''
         index = self._index
-        warrior = self._warrior
         core = self._core
         core_size = len(core)
 
-        A_abs = (self._A + index) % core_size
-        B_abs = (self._B + index) % core_size
-
-        if self._modifier == "I":
-            core[B_abs] = core[A_abs].copy()
-            core[B_abs].attach_core(core)
-            core[B_abs].update_index()
+        if self._modifier == "A":
+            core[destination_index]._A = core[source_index]._A
+        elif self._modifier == "B":
+            core[destination_index]._B = core[source_index]._B
+        elif self._modifier == "AB":
+            core[destination_index]._B = core[source_index]._A
+        elif self._modifier == "BA":
+            core[destination_index]._A = core[source_index]._B
         elif self._modifier == "F":
-            core[B_abs]._A = self._A
-            core[B_abs]._B = self._B
-            core[B_abs].attach_warrior(warrior)
-            core[B_abs].attach_core(core)
+            core[destination_index]._A = core[source_index]._A
+            core[destination_index]._B = core[source_index]._B
         elif self._modifier == "X":
-            core[B_abs]._A = self._B
-            core[B_abs]._B = self._A
-            core[B_abs].attach_warrior(warrior)
-            core[B_abs].attach_core(core)
+            core[destination_index]._A = core[source_index]._B
+            core[destination_index]._B = core[source_index]._A
+        elif self._modifier == "I":
+            core[destination_index] = core[source_index].copy()
+            core[destination_index].attach_core(core)
+            core[destination_index].update_index()
 
         new_index = (index + 1) % core_size
-        warrior.add_process(new_index)
+        return new_index
 
-    def ADD(self):
+    def ADD(self, source_index, destination_index):
         '''ADD -- add (adds one number to another)'''
-        # Modifiers[modifier](A, B)
-        if self._type_A == "#":
-            pass
-        pass
+        index = self._index
+        core = self._core
+        core_size = len(core)
 
-    def SUB(self):
+        if self._modifier == "A":
+            core[destination_index]._A += core[source_index]._A
+        elif self._modifier == "B":
+            core[destination_index]._B += core[source_index]._B
+        elif self._modifier == "AB":
+            core[destination_index]._B += core[source_index]._A
+        elif self._modifier == "BA":
+            core[destination_index]._A += core[source_index]._B
+        elif self._modifier == "F" or self._modifier == "I":
+            core[destination_index]._A += core[source_index]._A
+            core[destination_index]._B += core[source_index]._B
+        elif self._modifier == "X":
+            core[destination_index]._A += core[source_index]._B
+            core[destination_index]._B += core[source_index]._A
+
+        core[destination_index]._A %= core_size
+        core[destination_index]._B %= core_size
+        new_index = (index + 1) % core_size
+        return new_index
+
+    def SUB(self, source_index, destination_index):
         '''SUB -- subtract (subtracts one number from another)'''
-        # Modifiers[modifier](A, B)
-        pass
+        index = self._index
+        core = self._core
+        core_size = len(core)
 
-    def MUL(self):
+        if self._modifier == "A":
+            core[destination_index]._A -= core[source_index]._A
+        elif self._modifier == "B":
+            core[destination_index]._B -= core[source_index]._B
+        elif self._modifier == "AB":
+            core[destination_index]._B -= core[source_index]._A
+        elif self._modifier == "BA":
+            core[destination_index]._A -= core[source_index]._B
+        elif self._modifier == "F" or self._modifier == "I":
+            core[destination_index]._A -= core[source_index]._A
+            core[destination_index]._B -= core[source_index]._B
+        elif self._modifier == "X":
+            core[destination_index]._A -= core[source_index]._B
+            core[destination_index]._B -= core[source_index]._A
+
+        core[destination_index]._A %= core_size
+        core[destination_index]._B %= core_size
+        new_index = (index + 1) % core_size
+        return new_index
+
+    def MUL(self, source_index, destination_index):
         '''MUL -- multiply (multiplies one number with another)'''
-        # Modifiers[modifier](A, B)
-        pass
+        index = self._index
+        core = self._core
+        core_size = len(core)
 
-    def DIV(self):
+        if self._modifier == "A":
+            core[destination_index]._A *= core[source_index]._A
+        elif self._modifier == "B":
+            core[destination_index]._B *= core[source_index]._B
+        elif self._modifier == "AB":
+            core[destination_index]._B *= core[source_index]._A
+        elif self._modifier == "BA":
+            core[destination_index]._A *= core[source_index]._B
+        elif self._modifier == "F" or self._modifier == "I":
+            core[destination_index]._A *= core[source_index]._A
+            core[destination_index]._B *= core[source_index]._B
+        elif self._modifier == "X":
+            core[destination_index]._A *= core[source_index]._B
+            core[destination_index]._B *= core[source_index]._A
+
+        core[destination_index]._A %= core_size
+        core[destination_index]._B %= core_size
+        new_index = (index + 1) % core_size
+        return new_index
+
+    def DIV(self, source_index, destination_index):
         '''DIV -- divide (divides one number with another)'''
-        # Modifiers[modifier](A, B)
-        pass
+        index = self._index
+        core = self._core
+        core_size = len(core)
 
-    def MOD(self):
+        if self._modifier == "A":
+            if core[source_index]._A == 0:
+                return None
+            core[destination_index]._A //= core[source_index]._A
+        elif self._modifier == "B":
+            if core[source_index]._B == 0:
+                return None
+                core[destination_index]._B //= core[source_index]._B
+        elif self._modifier == "AB":
+            if core[source_index]._A == 0:
+                return None
+            core[destination_index]._B //= core[source_index]._A
+        elif self._modifier == "BA":
+            if core[source_index]._B == 0:
+                return None
+            core[destination_index]._A //= core[source_index]._B
+        elif self._modifier == "F" or self._modifier == "I":
+            if core[source_index]._A == 0 or core[source_index]._B == 0:
+                return None
+            core[destination_index]._A //= core[source_index]._A
+            core[destination_index]._B //= core[source_index]._B
+        elif self._modifier == "X":
+            if core[source_index]._A == 0 or core[source_index]._B == 0:
+                return None
+            core[destination_index]._A //= core[source_index]._B
+            core[destination_index]._B //= core[source_index]._A
+
+        core[destination_index]._A %= core_size
+        core[destination_index]._B %= core_size
+        new_index = (index + 1) % core_size
+        return new_index
+
+    def MOD(self, source_index, destination_index):
         '''MOD -- modulus (divides one number with another
         and gives the remainder)'''
-        # Modifiers[modifier](A, B)
-        pass
+        index = self._index
+        core = self._core
+        core_size = len(core)
 
-    def JMP(self):
+        if self._modifier == "A":
+            if core[source_index]._A == 0:
+                return None
+            core[destination_index]._A %= core[source_index]._A
+        elif self._modifier == "B":
+            if core[source_index]._B == 0:
+                return None
+            core[destination_index]._B %= core[source_index]._B
+        elif self._modifier == "AB":
+            if core[source_index]._A == 0:
+                return None
+            core[destination_index]._B %= core[source_index]._A
+        elif self._modifier == "BA":
+            if core[source_index]._B == 0:
+                return None
+            core[destination_index]._A %= core[source_index]._B
+        elif self._modifier == "F" or self._modifier == "I":
+            if core[source_index]._A == 0 or core[source_index]._B == 0:
+                return None
+            core[destination_index]._A %= core[source_index]._A
+            core[destination_index]._B %= core[source_index]._B
+        elif self._modifier == "X":
+            if core[source_index]._A == 0 or core[source_index]._B == 0:
+                return None
+            core[destination_index]._A %= core[source_index]._B
+            core[destination_index]._B %= core[source_index]._A
+
+        core[destination_index]._A %= core_size
+        core[destination_index]._B %= core_size
+        new_index = (index + 1) % core_size
+        return new_index
+
+    def JMP(self, source_index, destination_index):
         '''JMP -- jump (continues execution from another address)'''
-        # Modifiers[modifier](A, B)
-        pass
+        return source_index
 
-    def JMZ(self):
+    def JMZ(self, source_index, destination_index):
         '''JMZ -- jump if zero (tests a number and jumps
         to an address if it's 0)'''
-        # Modifiers[modifier](A, B)
-        pass
+        index = self._index
+        core = self._core
+        core_size = len(core)
+        index_if_not_zero = (index + 1) % core_size
 
-    def JMN(self):
+        if self._modifier in ["A", "BA"]:
+            if core[destination_index]._A == 0:
+                return destination_index
+            else:
+                return index_if_not_zero
+        elif self._modifier in ["B", "AB"]:
+            if core[destination_index]._B == 0:
+                return destination_index
+            else:
+                return index_if_not_zero
+        elif self._modifier in ["F", "X", "I"]:
+            if core[destination_index]._A == core[destination_index]._B == 0:
+                return destination_index
+            else:
+                return index_if_not_zero
+
+    def JMN(self, source_index, destination_index):
         '''JMN -- jump if not zero (tests a number and
         jumps if it isn't 0)'''
-        # Modifiers[modifier](A, B)
-        pass
+        index = self._index
+        core = self._core
+        core_size = len(core)
+        index_if_zero = (index + 1) % core_size
 
-    def DJN(self):
+        if self._modifier in ["A", "BA"]:
+            if core[destination_index]._A != 0:
+                return destination_index
+            else:
+                return index_if_zero
+        elif self._modifier in ["B", "AB"]:
+            if core[destination_index]._B != 0:
+                return destination_index
+            else:
+                return index_if_zero
+        elif self._modifier in ["F", "X", "I"]:
+            if core[destination_index]._A != 0:
+                if core[destination_index]._B != 0:
+                    return destination_index
+                else:
+                    return index_if_zero
+            else:
+                return index_if_zero
+
+    def DJN(self, source_index, destination_index):
         '''DJN -- decrement and jump if not zero (decrements a number
         by one, and jumps unless the result is 0)'''
-        # Modifiers[modifier](A, B)
-        pass
+        index = self._index
+        core = self._core
+        core_size = len(core)
+        index_if_zero = (index + 1) % core_size
 
-    def SPL(self):
+        if self._modifier in ["A", "BA"]:
+            core[destination_index]._A += (core_size - 1)
+            core[destination_index]._A %= core_size
+            if core[destination_index]._A != 0:
+                return destination_index
+            else:
+                return index_if_zero
+        elif self._modifier in ["B", "AB"]:
+            core[destination_index]._B += (core_size - 1)
+            core[destination_index]._B %= core_size
+            if core[destination_index]._B != 0:
+                return destination_index
+            else:
+                return index_if_zero
+        elif self._modifier in ["F", "X", "I"]:
+            core[destination_index]._A += (core_size - 1)
+            core[destination_index]._A %= core_size
+            core[destination_index]._B += (core_size - 1)
+            core[destination_index]._B %= core_size
+            if core[destination_index]._A != 0:
+                if core[destination_index]._B != 0:
+                    return destination_index
+                else:
+                    return index_if_zero
+            else:
+                return index_if_zero
+
+    def SPL(self, source_index, destination_index):
         '''SPL -- split (starts a second process at another address)'''
         # Modifiers[modifier](A, B)
         pass
 
-    def CMP(self):
+    def CMP(self, source_index, destination_index):
         '''CMP -- compare (same as SEQ)'''
-        # Modifiers[modifier](A, B)
-        pass
+        return self.SEQ(source_index, destination_index)
 
-    def SEQ(self):
+    def SEQ(self, source_index, destination_index):
         '''SEQ -- skip if equal (compares two instructions, and skips the next
         instruction if they are equal)'''
         # Modifiers[modifier](A, B)
         pass
 
-    def SNE(self):
+    def SNE(self, source_index, destination_index):
         '''SNE -- skip if not equal (compares two instructions, and skips the next
         instruction if they aren't equal)'''
         # Modifiers[modifier](A, B)
         pass
 
-    def SLT(self):
+    def SLT(self, source_index, destination_index):
         '''SLT -- skip if lower than (compares two values, and skips the
         next instruction if the first is lower than the second)'''
         # Modifiers[modifier](A, B)
         pass
 
-    def NOP(self):
+    def NOP(self, source_index, destination_index):
         '''NOP -- no operation (does nothing)'''
         # Modifiers[modifier](A, B)
-        pass
-
-    # Modifiers:
-
-    def mod_A(self):
-        '''A -- moves the A of the source into the A of the destination'''
-        pass
-
-    def mod_B(self):
-        '''B -- moves the B of the source into the B of the destination'''
-        pass
-
-    def mod_AB(self):
-        '''AB -- moves the A of the source into the B of the destination'''
-        pass
-
-    def mod_BA(self):
-        '''BA -- moves the B of the source into the A of the destination'''
-        pass
-
-    def mod_F(self):
-        '''F -- moves AB of the source into the AB in the destination'''
-        pass
-
-    def mod_X(self):
-        '''X -- moves AB of the source into the BA in the destination'''
-        pass
-
-    def mod_I(self):
-        '''I -- moves the whole source instruction into the destination'''
         pass
