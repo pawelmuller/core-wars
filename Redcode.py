@@ -115,7 +115,43 @@ class Instruction:
         if self._type_B not in self.Redcode_Addressing_Modes:
             error_msg = f"{self._type_B} addressing mode doesn't exist."
             raise WrongAddressingMode(error_msg)
+        if self._type_A == "@":
+            error_msg = f"A-type mustn't be '@'. It's reserved for B-one only."
+            raise WrongAddressingMode(error_msg)
+        if self._type_B == "*":
+            error_msg = f"B-type mustn't be '*'. It's reserved for A-one only."
+            raise WrongAddressingMode(error_msg)
         return
+
+    def _set_default_modifier(self):
+        """
+        If instruction modifier doesn't exist, the method adds default one.
+        """
+        instruction = self._instruction
+        if instruction in ["DAT", "NOP"]:
+            self._modifier = "F"
+        elif instruction in ["MOV", "SEQ", "SNE", "CMP"]:
+            if self._type_A == "#":
+                self._modifier = "AB"
+            elif self._type_B == "#":
+                self._modifier = "B"
+            else:
+                self._modifier = "I"
+        elif instruction in ["ADD", "SUB", "MUL", "DIV", "MOD"]:
+            if self._type_A == "#":
+                self._modifier = "AB"
+            elif self._type_B == "#":
+                self._modifier = "B"
+            else:
+                self._modifier = "F"
+        elif instruction in ["SLT", "LDP", "STP"]:
+            if self._type_A == "#":
+                self._modifier = "AB"
+            else:
+                self._modifier = "B"
+        elif instruction in ["JMP", "JMZ", "JMN", "DJN", "SPL"]:
+            self._modifier = "B"
+        return True
 
     def convert(self, line):
         """
@@ -168,16 +204,19 @@ class Instruction:
             variable = in_str.strip()
             if variable.isdigit():
                 if self._instruction == "DAT":
+                    self._A = 0
                     self._B = int(variable)
                 else:
                     self._A = int(variable)
-            elif variable[0] == "-":
+            elif variable[0] == "-" and variable[1:].isdigit():
                 if self._instruction == "DAT":
+                    self._A = 0
                     self._B = int(variable)
                 else:
                     self._A = int(variable)
             else:
                 if self._instruction == "DAT":
+                    self._A = 0
                     self._type_B = variable[0]
                     self._B = int(variable[1:])
                 else:
@@ -235,42 +274,97 @@ class Instruction:
         self._warrior = warrior
         return True
 
-    def _set_default_modifier(self):
-        """
-        If instruction modifier doesn't exist, the method adds default one.
-        """
-        instruction = self._instruction
-        if instruction in ["DAT", "NOP"]:
-            self._modifier = "F"
-        elif instruction in ["MOV", "SEQ", "SNE", "CMP"]:
-            if self._type_A == "#":
-                self._modifier = "AB"
-            elif self._type_B == "#":
-                self._modifier = "B"
-            else:
-                self._modifier = "I"
-        elif instruction in ["ADD", "SUB", "MUL", "DIV", "MOD"]:
-            if self._type_A == "#":
-                self._modifier = "AB"
-            elif self._type_B == "#":
-                self._modifier = "B"
-            else:
-                self._modifier = "F"
-        elif instruction in ["SLT", "LDP", "STP"]:
-            if self._type_A == "#":
-                self._modifier = "AB"
-            else:
-                self._modifier = "B"
-        elif instruction in ["JMP", "JMZ", "JMN", "DJN", "SPL"]:
-            self._modifier = "B"
-        return True
-
     def run(self):
         """
         Runs the instruction.
         """
-        self.Redcode_Instructions[self._instruction]()
+        core = self._core
+        A = self._A
+        B = self._B
+        source_index = self.Redcode_Addressing_Modes[self._type_A](A)
+        destination_index = self.Redcode_Addressing_Modes[self._type_B](B)
+        source = core[source_index]
+        destination = core[destination_index]
+        self.Redcode_Instructions[self._instruction](source, destination)
         return True
+
+    # Addressing modes:
+
+    def immediate(self, variable):
+        """#"""
+        return self._index
+
+    def direct(self, variable):
+        """$"""
+        core = self._core
+        core_size = len(core)
+        index = self._index + variable + core_size
+        index %= core_size
+        return index
+
+    def A_indirect(self, variable):
+        """*"""
+        core = self._core
+        core_size = len(core)
+        pointer = self._index + variable + core_size
+        pointer %= core_size
+        index = core[pointer]._A + core[pointer]._index + core_size
+        index %= core_size
+        return index
+
+    def B_indirect(self, variable):
+        """@"""
+        core = self._core
+        core_size = len(core)
+        pointer = self._index + variable + core_size
+        pointer %= core_size
+        index = core[pointer]._B + core[pointer]._index + core_size
+        index %= core_size
+        return index
+
+    def A_predecrement(self, variable):
+        """{"""
+        core = self._core
+        core_size = len(core)
+        pointer = self._index + variable + core_size
+        pointer %= core_size
+        core[pointer]._A -= 1
+        index = core[pointer]._A + core[pointer]._index + core_size
+        index %= core_size
+        return index
+
+    def B_predecrement(self, variable):
+        """}"""
+        core = self._core
+        core_size = len(core)
+        pointer = self._index + variable + core_size
+        pointer %= core_size
+        core[pointer]._B -= 1
+        index = core[pointer]._B + core[pointer]._index + core_size
+        index %= core_size
+        return index
+
+    def A_postincrement(self, variable):
+        """<"""
+        core = self._core
+        core_size = len(core)
+        pointer = self._index + variable + core_size
+        pointer %= core_size
+        index = core[pointer]._A + core[pointer]._index + core_size
+        index %= core_size
+        core[pointer]._A += 1
+        return index
+
+    def B_postincrement(self, variable):
+        """>"""
+        core = self._core
+        core_size = len(core)
+        pointer = self._index + variable + core_size
+        pointer %= core_size
+        index = core[pointer]._B + core[pointer]._index + core_size
+        index %= core_size
+        core[pointer]._B += 1
+        return index
 
     # Handling Redcode instructions:
     def DAT(self):
@@ -278,28 +372,38 @@ class Instruction:
         pass
 
     def MOV(self):
-        '''
-        MOV -- move (copies data from one address to another)
-        '''
-        # Modifiers[modifier](A, B)
+        '''MOV -- move (copies data from one address to another)'''
         index = self._index
+        warrior = self._warrior
         core = self._core
         core_size = len(core)
 
         A_abs = (self._A + index) % core_size
         B_abs = (self._B + index) % core_size
 
-        core[B_abs] = core[A_abs].copy()
-        new_index = (index + 1) % core_size
-        core[B_abs].attach_core(core)
-        core[B_abs].update_index()
+        if self._modifier == "I":
+            core[B_abs] = core[A_abs].copy()
+            core[B_abs].attach_core(core)
+            core[B_abs].update_index()
+        elif self._modifier == "F":
+            core[B_abs]._A = self._A
+            core[B_abs]._B = self._B
+            core[B_abs].attach_warrior(warrior)
+            core[B_abs].attach_core(core)
+        elif self._modifier == "X":
+            core[B_abs]._A = self._B
+            core[B_abs]._B = self._A
+            core[B_abs].attach_warrior(warrior)
+            core[B_abs].attach_core(core)
 
-        warrior = self._warrior
+        new_index = (index + 1) % core_size
         warrior.add_process(new_index)
 
     def ADD(self):
         '''ADD -- add (adds one number to another)'''
         # Modifiers[modifier](A, B)
+        if self._type_A == "#":
+            pass
         pass
 
     def SUB(self):
@@ -407,30 +511,4 @@ class Instruction:
 
     def mod_I(self):
         '''I -- moves the whole source instruction into the destination'''
-        pass
-
-    # Addressing modes:
-
-    def immediate(self):
-        pass
-
-    def direct(self):
-        pass
-
-    def A_indirect(self):
-        pass
-
-    def B_indirect(self):
-        pass
-
-    def A_predecrement(self):
-        pass
-
-    def B_predecrement(self):
-        pass
-
-    def A_postincrement(self):
-        pass
-
-    def B_postincrement(self):
         pass

@@ -21,18 +21,18 @@ def test_Instruction_convert():
     assert instruction3._instruction == "JMP"
     assert instruction3._A == -4
 
-    instruction4 = Instruction("      JMP.BA   @-4,  #15")
+    instruction4 = Instruction("      JMP.BA   -4,  #15")
     assert instruction4._instruction == "JMP"
     assert instruction4._modifier == "BA"
     assert instruction4._A == -4
-    assert instruction4._type_A == "@"
+    assert instruction4._type_A == "$"
     assert instruction4._B == 15
     assert instruction4._type_B == "#"
 
     instruction5 = Instruction("   DAT @17777")
     assert instruction5._instruction == "DAT"
     assert instruction5._modifier == "F"
-    assert instruction5._A is None
+    assert instruction5._A == 0
     assert instruction5._type_A == "$"
     assert instruction5._B == 17777
     assert instruction5._type_B == "@"
@@ -56,13 +56,13 @@ def test_instruction_set_default_modifier():
     assert instruction3._A == -4
     assert instruction3._modifier == "B"
 
-    instruction4 = Instruction("      SEQ   @-4,  15")
+    instruction4 = Instruction("      SEQ   *-5,  @15")
     assert instruction4._instruction == "SEQ"
     assert instruction4._modifier == "I"
-    assert instruction4._A == -4
-    assert instruction4._type_A == "@"
+    assert instruction4._A == -5
+    assert instruction4._type_A == "*"
     assert instruction4._B == 15
-    assert instruction4._type_B == "$"
+    assert instruction4._type_B == "@"
 
 
 def test_Instruction_validate():
@@ -74,6 +74,10 @@ def test_Instruction_validate():
         Instruction("MOV $, 3")
     with pytest.raises(WrongAddressingMode):
         Instruction("MOV %5, 3")
+    with pytest.raises(WrongAddressingMode):
+        Instruction("MOV @5, 3")
+    with pytest.raises(WrongAddressingMode):
+        Instruction("MOV 5, *3")
 
 
 def test_Instruction_compare():

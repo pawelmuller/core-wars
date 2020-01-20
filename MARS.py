@@ -1,7 +1,6 @@
 from Redcode import Instruction
 from random import randint
 from Validating_tools import NoWarriors, WarriorSize
-# from warrior import Warrior
 
 
 class MARS():
