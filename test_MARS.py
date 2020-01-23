@@ -1,6 +1,6 @@
 import pytest
 from MARS import MARS
-from warrior import Warrior
+from Warrior import Warrior
 from Redcode import Instruction
 from Validating_tools import WarriorSizeError, NoWarriorsError
 

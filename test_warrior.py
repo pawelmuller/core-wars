@@ -1,4 +1,4 @@
-from warrior import Warrior
+from Warrior import Warrior
 from Redcode import Instruction
 
 

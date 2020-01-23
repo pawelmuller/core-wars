@@ -1,6 +1,6 @@
 import argparse
 from MARS import MARS
-from warrior import Warrior
+from Warrior import Warrior
 
 if __name__ == "__main__":
     # Parsing arguments
