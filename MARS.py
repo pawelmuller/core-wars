@@ -1,6 +1,8 @@
 from Redcode import Instruction
 from random import randint
 from Validating_tools import NoWarriorsError, WarriorSizeError
+from os import system
+from termcolor import colored
 
 
 class MARS():
@@ -99,8 +101,11 @@ class MARS():
         """
         Prepares MARS for simulation.
         """
-        for warrior in self._warriors:
+        colors = ['red', 'yellow', 'green', 'blue', 'orange',
+                  'cyan', 'magenta', 'white', 'grey']
+        for warrior, color in zip(self._warriors, colors):
             warrior.attach_core(self)
+            warrior.set_color(color)
         self._place_warriors()
 
     def _update_instruction_indexes(self):
@@ -142,6 +147,7 @@ class MARS():
             self._update_instruction_indexes()
             cycles_count += 1
             if self._perform_cycle():
+                self._print_simulation()
                 continue
             else:
                 break
@@ -160,9 +166,13 @@ class MARS():
 
     def _print_simulation(self):
         """
-        Prints ASCII-based core representation.
+        Prints character-based core representation.
         """
-        pass
+        system("clear")
+        default = Instruction(None, "DAT", None, 0, 0)
+        print(''.join([" " if instruction.compare(default)
+                       else colored("█", instruction.get_warrior().get_color())
+                       for instruction in self._MARS]))
 
     def _print_results(self):
         """

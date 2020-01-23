@@ -119,13 +119,7 @@ class Instruction:
         if self._type_B not in self.Redcode_Addressing_Modes:
             error_msg = f"{self._type_B} addressing mode doesn't exist."
             raise WrongAddressingModeError(error_msg)
-        if self._type_A == "@":
-            error_msg = f"A-type mustn't be '@'. It's reserved for B-one only."
-            raise WrongAddressingModeError(error_msg)
-        if self._type_B == "*":
-            error_msg = f"B-type mustn't be '*'. It's reserved for A-one only."
-            raise WrongAddressingModeError(error_msg)
-        return
+        return True
 
     def _set_default_modifier(self):
         """
@@ -175,7 +169,10 @@ class Instruction:
         if '.' in in_str:
             in_str = in_str.split('.')
             in_str = in_str[1]
-            in_str = in_str.split(' ', maxsplit=1)
+            if ' ' in in_str:
+                in_str = in_str.split(' ', maxsplit=1)
+            else:
+                in_str = in_str.split('\t', maxsplit=1)
             self._modifier = in_str[0]
             in_str = in_str[1]
         else:
@@ -282,16 +279,21 @@ class Instruction:
         """
         return self._opcode
 
+    def get_warrior(self):
+        """
+        Returns its warrior.
+        """
+        return self._warrior
+
     def run(self):
         """
         Runs the instruction.
         """
         A = self._A
         B = self._B
-        source_index = self.Redcode_Addressing_Modes[self._type_A](A)
-        destination_index = self.Redcode_Addressing_Modes[self._type_B](B)
-        self.Redcode_Opcodes[self._opcode](source_index, destination_index)
-        return True
+        source_id = self.Redcode_Addressing_Modes[self._type_A](A)
+        destination_id = self.Redcode_Addressing_Modes[self._type_B](B)
+        return self.Redcode_Opcodes[self._opcode](source_id, destination_id)
 
     # Addressing modes:
 
@@ -651,8 +653,11 @@ class Instruction:
 
     def SPL(self, source_index, destination_index):
         '''SPL -- split (starts a second process at another address)'''
-        # Modifiers[modifier](A, B)
-        pass
+        index = self._index
+        core = self._core
+        core_size = len(core)
+        parent_index = (index + 1) % core_size
+        return parent_index, source_index
 
     def CMP(self, source_index, destination_index):
         '''CMP -- compare (same as SEQ)'''
@@ -661,22 +666,109 @@ class Instruction:
     def SEQ(self, source_index, destination_index):
         '''SEQ -- skip if equal (compares two instructions, and skips the next
         instruction if they are equal)'''
-        # Modifiers[modifier](A, B)
-        pass
+        index = self._index
+        core = self._core
+        core_size = len(core)
+
+        new_index = (index + 1) % core_size
+        skip_index = (new_index + 1) % core_size
+
+        if self._modifier == "A":
+            if core[destination_index]._A == core[source_index]._A:
+                return skip_index
+        elif self._modifier == "B":
+            if core[destination_index]._B == core[source_index]._B:
+                return skip_index
+        elif self._modifier == "AB":
+            if core[destination_index]._B == core[source_index]._A:
+                return skip_index
+        elif self._modifier == "BA":
+            if core[destination_index]._A == core[source_index]._B:
+                return skip_index
+        elif self._modifier == "F":
+            if core[destination_index]._A == core[source_index]._A:
+                if core[destination_index]._B == core[source_index]._B:
+                    return skip_index
+        elif self._modifier == "X":
+            if core[destination_index]._A == core[source_index]._B:
+                if core[destination_index]._B == core[source_index]._A:
+                    return skip_index
+        elif self._modifier == "I":
+            if core[destination_index].compare(core[source_index]):
+                return skip_index
+        return new_index
 
     def SNE(self, source_index, destination_index):
         '''SNE -- skip if not equal (compares two instructions, and skips the next
         instruction if they aren't equal)'''
-        # Modifiers[modifier](A, B)
-        pass
+        index = self._index
+        core = self._core
+        core_size = len(core)
+
+        new_index = (index + 1) % core_size
+        skip_index = (new_index + 1) % core_size
+
+        if self._modifier == "A":
+            if core[destination_index]._A != core[source_index]._A:
+                return skip_index
+        elif self._modifier == "B":
+            if core[destination_index]._B != core[source_index]._B:
+                return skip_index
+        elif self._modifier == "AB":
+            if core[destination_index]._B != core[source_index]._A:
+                return skip_index
+        elif self._modifier == "BA":
+            if core[destination_index]._A != core[source_index]._B:
+                return skip_index
+        elif self._modifier == "F":
+            if core[destination_index]._A != core[source_index]._A:
+                if core[destination_index]._B != core[source_index]._B:
+                    return skip_index
+        elif self._modifier == "X":
+            if core[destination_index]._A != core[source_index]._B:
+                if core[destination_index]._B != core[source_index]._A:
+                    return skip_index
+        elif self._modifier == "I":
+            if core[destination_index].compare(core[source_index]):
+                return skip_index
+        return new_index
 
     def SLT(self, source_index, destination_index):
         '''SLT -- skip if lower than (compares two values, and skips the
         next instruction if the first is lower than the second)'''
-        # Modifiers[modifier](A, B)
-        pass
+        index = self._index
+        core = self._core
+        core_size = len(core)
+
+        new_index = (index + 1) % core_size
+        skip_index = (new_index + 1) % core_size
+
+        if self._modifier == "A":
+            if core[destination_index]._A > core[source_index]._A:
+                return skip_index
+        elif self._modifier == "B":
+            if core[destination_index]._B > core[source_index]._B:
+                return skip_index
+        elif self._modifier == "AB":
+            if core[destination_index]._B > core[source_index]._A:
+                return skip_index
+        elif self._modifier == "BA":
+            if core[destination_index]._A > core[source_index]._B:
+                return skip_index
+        elif self._modifier == "F" or self._modifier == "I":
+            if core[destination_index]._A > core[source_index]._A:
+                if core[destination_index]._B > core[source_index]._B:
+                    return skip_index
+        elif self._modifier == "X":
+            if core[destination_index]._A > core[source_index]._B:
+                if core[destination_index]._B > core[source_index]._A:
+                    return skip_index
+        return new_index
 
     def NOP(self, source_index, destination_index):
         '''NOP -- no operation (does nothing)'''
-        # Modifiers[modifier](A, B)
-        pass
+        index = self._index
+        core = self._core
+        core_size = len(core)
+        new_index = (index + 1) % core_size
+        return new_index

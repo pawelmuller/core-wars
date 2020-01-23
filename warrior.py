@@ -92,12 +92,13 @@ class Warrior:
         current_process_index %= core_size
         instruction = core[current_process_index]
         new_index = instruction.run()
-        if new_index:
-            if instruction.get_opcode == "SPL":
-                pass  # TODO
+        if new_index is not None:
+            if instruction.get_opcode() == "SPL":
+                parent_index, child_index = new_index
+                self.add_process(parent_index)
+                self.add_process(child_index)
             else:
-                new_process_index = (current_process_index + 1) % core_size
-                self.add_process(new_process_index)
+                self.add_process(new_index)
             return True
         else:
             return True
@@ -109,20 +110,6 @@ class Warrior:
         core_size = len(self._core)
         index %= core_size
         self._process_queue.append(index)
-        return True
-
-    def end_process(self, index=None):
-        """
-        Ends current or specific process of the warrior.
-        Deletes it from the _process_queue list.
-        """
-        if index:
-            core_size = len(self._core)
-            index %= core_size
-            process = self._process_queue[index]
-        else:
-            process = self._process_queue[0]
-        self._process_queue.remove(process)
         return True
 
     # Getters and setters:
@@ -145,3 +132,16 @@ class Warrior:
         """
         self._core = core
         return True
+
+    def set_color(self, color):
+        """
+        Sets warriors color.
+        """
+        self._color = color
+        return True
+
+    def get_color(self):
+        """
+        Returns warriors color.
+        """
+        return self._color

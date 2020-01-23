@@ -91,9 +91,9 @@ def test_Instruction_validate():
     with pytest.raises(WrongAddressingModeError):
         Instruction("MOV %5, 3")
     with pytest.raises(WrongAddressingModeError):
-        Instruction("MOV @5, 3")
+        Instruction("MOV (5, 3")
     with pytest.raises(WrongAddressingModeError):
-        Instruction("MOV 5, *3")
+        Instruction("MOV 5, )3")
 
 
 def test_Instruction_compare():
