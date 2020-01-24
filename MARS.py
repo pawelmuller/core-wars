@@ -27,6 +27,9 @@ class MARS():
         self._MARS[key] = value
 
     def get_index(self, item):
+        """
+        Returns instruction index in MARS
+        """
         core = self._MARS
         return core.index(item)
 
@@ -102,7 +105,7 @@ class MARS():
         Prepares MARS for simulation.
         """
         colors = ['red', 'yellow', 'green', 'blue', 'orange',
-                  'cyan', 'magenta', 'white', 'grey']
+                  'cyan', 'magenta', 'white']
         for warrior, color in zip(self._warriors, colors):
             warrior.attach_core(self)
             warrior.set_color(color)
@@ -130,12 +133,13 @@ class MARS():
         """
         for warrior in self._playing_warriors:
             warrior.attach_core(self)
-            warrior.make_a_turn()
-            if warrior.is_alive():
+            if warrior.make_a_turn():
                 continue
-            else:
+            elif len(self._playing_warriors) > 2:
                 self._playing_warriors.remove(warrior)
+            else:
                 return False
+
         return True
 
     def simulate_core(self):
@@ -147,7 +151,7 @@ class MARS():
             self._update_instruction_indexes()
             cycles_count += 1
             if self._perform_cycle():
-                self._print_simulation()
+                self._print_simulation(cycles_count)
                 continue
             else:
                 break
@@ -157,25 +161,46 @@ class MARS():
         """
         Prepare game results.
         """
+        winners = []
+        losers = []
         for warrior in self._warriors:
             if warrior.is_alive():
-                self._winner = warrior
+                winners.append(warrior)
             else:
-                self._loser = warrior
-        self._print_results()
+                losers.append(warrior)
+        self._print_results(winners, losers)
 
-    def _print_simulation(self):
+    def _print_simulation(self, cycle):
         """
         Prints character-based core representation.
         """
         system("clear")
         default = Instruction(None, "DAT", None, 0, 0)
         print(''.join([" " if instruction.compare(default)
-                       else colored("█", instruction.get_warrior().get_color())
+                       else colored("X", instruction.get_color())
+                       if instruction.get_warrior() is None
+                       else colored("█", instruction.get_color())
                        for instruction in self._MARS]))
+        print(f"\nCycle: {cycle} / {self._cycles_limit}\nWarriors:")
+        warriors_txt = ""
+        for warrior in self._warriors:
+            warriors_txt += colored(warrior.get_name(), warrior.get_color())
+            warriors_txt += "\t"
+        print(warriors_txt)
 
-    def _print_results(self):
+    def _print_results(self, winners, losers):
         """
         Prints game results.
         """
-        pass
+        output = "="*20 + "\n"
+        output += "Round results:\n"
+        if self._cycles_count == self._cycles_limit:
+            output += "There was a draw.\nNone of warriors won.\n"
+        else:
+            output += "\nWinners:" + "\n"
+            for winner in winners:
+                output += colored(winner.get_name(), winner.get_color()) + "\n"
+            output += "\nLosers:" + "\n"
+            for loser in losers:
+                output += colored(loser.get_name(), loser.get_color()) + "\n"
+        print(output)

@@ -22,6 +22,7 @@ class Warrior:
         # List of indexes of different processes
         # (last on the list - first to run):
         self._process_queue = []
+        self._is_alive = True
 
     # Self representation:
 
@@ -32,15 +33,15 @@ class Warrior:
         return len(self._instructions)
 
     def _extract_name(self):
+        """
+        Extrcts warrior name from its file name.
+        """
         if "/" in self._path_to_file:
             name = self._path_to_file.split("/")[-1]
         else:
             name = self._path_to_file
         name = name.split('.')[0]
         return name
-
-    def is_alive(self):
-        return True if len(self) > 0 else False
 
     # File handling:
 
@@ -88,7 +89,7 @@ class Warrior:
         """
         core = self._core
         core_size = len(core)
-        current_process_index = self._process_queue.pop()
+        current_process_index = self._process_queue.pop(0)
         current_process_index %= core_size
         instruction = core[current_process_index]
         new_index = instruction.run()
@@ -101,7 +102,8 @@ class Warrior:
                 self.add_process(new_index)
             return True
         else:
-            return True
+            self._is_alive = False
+            return False
 
     def add_process(self, index):
         """
@@ -115,6 +117,9 @@ class Warrior:
     # Getters and setters:
 
     def get_instructions(self):
+        """
+        Returns a list of warrior instructions.
+        """
         return self._instructions
 
     def set_start(self, index):
@@ -145,3 +150,15 @@ class Warrior:
         Returns warriors color.
         """
         return self._color
+
+    def get_name(self):
+        """
+        Returns warriors name.
+        """
+        return self._name
+
+    def is_alive(self):
+        """
+        Returns the valur of _is_alive variable.
+        """
+        return self._is_alive

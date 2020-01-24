@@ -1,6 +1,5 @@
 ;Name PolyDwarfs
 ;Author Rodrigo Setti
-;Strat Cria 11 Dwarfs em posicoes estrategicas.
 
 add.a   #800,   $7	;muda pos. dos ponteiros
 add.ab  #800,   $5

@@ -1,6 +1,5 @@
 ;redcode-94
 ;name Looping Paper
-;author Blameless
 
 MOV.AB	#5,	#0
 MOV.I	<-1,	{3

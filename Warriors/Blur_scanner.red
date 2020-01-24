@@ -1,6 +1,5 @@
 ;redcode-94
 ;name Blur Scanner
-;author Blameless
 
 MOV.B	$1,	#0
 ADD.AB	#4884,	#4884

@@ -94,6 +94,9 @@ class Instruction:
         core[self._index] = value.copy()
 
     def _validate_instruction(self):
+        """
+        Checks if the instruction given is correct.
+        """
         if self._opcode not in self.Redcode_Opcodes:
             error_msg = f"{self._opcode} instruction doesn't exist."
             raise WrongOpcodeError(error_msg)
@@ -123,7 +126,7 @@ class Instruction:
 
     def _set_default_modifier(self):
         """
-        If instruction modifier doesn't exist, the method adds default one.
+        If instruction wasn't defined, the method adds default one.
         """
         opcode = self._opcode
         if opcode in ["DAT", "NOP"]:
@@ -285,6 +288,15 @@ class Instruction:
         """
         return self._warrior
 
+    def get_color(self):
+        """
+        Returns its color.
+        """
+        if self._warrior:
+            return self._warrior.get_color()
+        else:
+            return "white"
+
     def run(self):
         """
         Runs the instruction.
@@ -336,23 +348,27 @@ class Instruction:
         pointer = self._index + variable + core_size
         pointer %= core_size
         core[pointer]._A -= 1
+        pointer += (core_size - 1)
+        pointer %= core_size
         index = core[pointer]._A + core[pointer]._index + core_size
         index %= core_size
         return index
 
     def B_predecrement(self, variable):
-        """}"""
+        """<"""
         core = self._core
         core_size = len(core)
         pointer = self._index + variable + core_size
         pointer %= core_size
         core[pointer]._B -= 1
+        pointer += (core_size - 1)
+        pointer %= core_size
         index = core[pointer]._B + core[pointer]._index + core_size
         index %= core_size
         return index
 
     def A_postincrement(self, variable):
-        """<"""
+        """}"""
         core = self._core
         core_size = len(core)
         pointer = self._index + variable + core_size
@@ -375,11 +391,11 @@ class Instruction:
 
     # Handling Redcode opcodes:
     def DAT(self, source_index, destination_index):
-        '''DAT -- data (kills the process)'''
+        """DAT -- data (kills the process)"""
         return None
 
     def MOV(self, source_index, destination_index):
-        '''MOV -- move (copies data from one address to another)'''
+        """MOV -- move (copies data from one address to another)"""
         index = self._index
         core = self._core
         core_size = len(core)
@@ -403,14 +419,20 @@ class Instruction:
             core[destination_index].attach_core(core)
             core[destination_index].update_index()
 
+        core[destination_index]._A %= core_size
+        core[destination_index]._B %= core_size
+        core[destination_index].attach_warrior(self._warrior)
         new_index = (index + 1) % core_size
         return new_index
 
     def ADD(self, source_index, destination_index):
-        '''ADD -- add (adds one number to another)'''
+        """ADD -- add (adds one number to another)"""
         index = self._index
         core = self._core
         core_size = len(core)
+
+        core[source_index]._A %= core_size
+        core[source_index]._B %= core_size
 
         if self._modifier == "A":
             core[destination_index]._A += core[source_index]._A
@@ -429,14 +451,18 @@ class Instruction:
 
         core[destination_index]._A %= core_size
         core[destination_index]._B %= core_size
+
         new_index = (index + 1) % core_size
         return new_index
 
     def SUB(self, source_index, destination_index):
-        '''SUB -- subtract (subtracts one number from another)'''
+        """SUB -- subtract (subtracts one number from another)"""
         index = self._index
         core = self._core
         core_size = len(core)
+
+        core[source_index]._A %= core_size
+        core[source_index]._B %= core_size
 
         if self._modifier == "A":
             core[destination_index]._A -= core[source_index]._A
@@ -459,10 +485,15 @@ class Instruction:
         return new_index
 
     def MUL(self, source_index, destination_index):
-        '''MUL -- multiply (multiplies one number with another)'''
+        """MUL -- multiply (multiplies one number with another)"""
         index = self._index
         core = self._core
         core_size = len(core)
+
+        core[source_index]._A %= core_size
+        core[destination_index]._A %= core_size
+        core[source_index]._B %= core_size
+        core[destination_index]._B %= core_size
 
         if self._modifier == "A":
             core[destination_index]._A *= core[source_index]._A
@@ -485,10 +516,15 @@ class Instruction:
         return new_index
 
     def DIV(self, source_index, destination_index):
-        '''DIV -- divide (divides one number with another)'''
+        """DIV -- divide (divides one number with another)"""
         index = self._index
         core = self._core
         core_size = len(core)
+
+        core[source_index]._A %= core_size
+        core[destination_index]._A %= core_size
+        core[source_index]._B %= core_size
+        core[destination_index]._B %= core_size
 
         if self._modifier == "A":
             if core[source_index]._A == 0:
@@ -523,11 +559,16 @@ class Instruction:
         return new_index
 
     def MOD(self, source_index, destination_index):
-        '''MOD -- modulus (divides one number with another
-        and gives the remainder)'''
+        """MOD -- modulus (divides one number with another
+        and gives the remainder)"""
         index = self._index
         core = self._core
         core_size = len(core)
+
+        core[source_index]._A %= core_size
+        core[destination_index]._A %= core_size
+        core[source_index]._B %= core_size
+        core[destination_index]._B %= core_size
 
         if self._modifier == "A":
             if core[source_index]._A == 0:
@@ -562,63 +603,56 @@ class Instruction:
         return new_index
 
     def JMP(self, source_index, destination_index):
-        '''JMP -- jump (continues execution from another address)'''
+        """JMP -- jump (continues execution from another address)"""
         return source_index
 
     def JMZ(self, source_index, destination_index):
-        '''JMZ -- jump if zero (tests a number and jumps
-        to an address if it's 0)'''
+        """JMZ -- jump if zero (tests a number and jumps
+        to an address if it's 0)"""
         index = self._index
         core = self._core
         core_size = len(core)
         index_if_not_zero = (index + 1) % core_size
 
+        destination_A = core[destination_index]._A % core_size
+        destination_B = core[destination_index]._B % core_size
+
         if self._modifier in ["A", "BA"]:
-            if core[destination_index]._A == 0:
-                return destination_index
-            else:
-                return index_if_not_zero
+            if destination_A == 0:
+                return source_index
         elif self._modifier in ["B", "AB"]:
-            if core[destination_index]._B == 0:
-                return destination_index
-            else:
-                return index_if_not_zero
+            if destination_B == 0:
+                return source_index
         elif self._modifier in ["F", "X", "I"]:
-            if core[destination_index]._A == core[destination_index]._B == 0:
-                return destination_index
-            else:
-                return index_if_not_zero
+            if destination_A == destination_B == 0:
+                return source_index
+        return index_if_not_zero
 
     def JMN(self, source_index, destination_index):
-        '''JMN -- jump if not zero (tests a number and
-        jumps if it isn't 0)'''
+        """JMN -- jump if not zero (tests a number and
+        jumps if it isn't 0)"""
         index = self._index
         core = self._core
         core_size = len(core)
         index_if_zero = (index + 1) % core_size
 
+        destination_A = core[destination_index]._A % core_size
+        destination_B = core[destination_index]._B % core_size
+
         if self._modifier in ["A", "BA"]:
-            if core[destination_index]._A != 0:
-                return destination_index
-            else:
-                return index_if_zero
+            if destination_A != 0:
+                return source_index
         elif self._modifier in ["B", "AB"]:
-            if core[destination_index]._B != 0:
-                return destination_index
-            else:
-                return index_if_zero
+            if destination_B != 0:
+                return source_index
         elif self._modifier in ["F", "X", "I"]:
-            if core[destination_index]._A != 0:
-                if core[destination_index]._B != 0:
-                    return destination_index
-                else:
-                    return index_if_zero
-            else:
-                return index_if_zero
+            if destination_A != 0:
+                if destination_B != 0:
+                    return source_index
+        return index_if_zero
 
     def DJN(self, source_index, destination_index):
-        '''DJN -- decrement and jump if not zero (decrements a number
-        by one, and jumps unless the result is 0)'''
+        """DJN -- decrement and jump if not zero"""
         index = self._index
         core = self._core
         core_size = len(core)
@@ -628,16 +662,12 @@ class Instruction:
             core[destination_index]._A += (core_size - 1)
             core[destination_index]._A %= core_size
             if core[destination_index]._A != 0:
-                return destination_index
-            else:
-                return index_if_zero
+                return source_index
         elif self._modifier in ["B", "AB"]:
             core[destination_index]._B += (core_size - 1)
             core[destination_index]._B %= core_size
             if core[destination_index]._B != 0:
-                return destination_index
-            else:
-                return index_if_zero
+                return source_index
         elif self._modifier in ["F", "X", "I"]:
             core[destination_index]._A += (core_size - 1)
             core[destination_index]._A %= core_size
@@ -645,14 +675,11 @@ class Instruction:
             core[destination_index]._B %= core_size
             if core[destination_index]._A != 0:
                 if core[destination_index]._B != 0:
-                    return destination_index
-                else:
-                    return index_if_zero
-            else:
-                return index_if_zero
+                    return source_index
+        return index_if_zero
 
     def SPL(self, source_index, destination_index):
-        '''SPL -- split (starts a second process at another address)'''
+        """SPL -- split (starts a second process at another address)"""
         index = self._index
         core = self._core
         core_size = len(core)
@@ -660,12 +687,12 @@ class Instruction:
         return parent_index, source_index
 
     def CMP(self, source_index, destination_index):
-        '''CMP -- compare (same as SEQ)'''
+        """CMP -- compare (same as SEQ)"""
         return self.SEQ(source_index, destination_index)
 
     def SEQ(self, source_index, destination_index):
-        '''SEQ -- skip if equal (compares two instructions, and skips the next
-        instruction if they are equal)'''
+        """SEQ -- skip if equal (compares two instructions, and skips the next
+        instruction if they are equal)"""
         index = self._index
         core = self._core
         core_size = len(core)
@@ -673,25 +700,30 @@ class Instruction:
         new_index = (index + 1) % core_size
         skip_index = (new_index + 1) % core_size
 
+        destination_A = core[destination_index]._A % core_size
+        source_A = core[source_index]._A % core_size
+        destination_B = core[destination_index]._B % core_size
+        source_B = core[source_index]._B % core_size
+
         if self._modifier == "A":
-            if core[destination_index]._A == core[source_index]._A:
+            if destination_A == source_A:
                 return skip_index
         elif self._modifier == "B":
-            if core[destination_index]._B == core[source_index]._B:
+            if destination_B == source_B:
                 return skip_index
         elif self._modifier == "AB":
-            if core[destination_index]._B == core[source_index]._A:
+            if destination_B == source_A:
                 return skip_index
         elif self._modifier == "BA":
-            if core[destination_index]._A == core[source_index]._B:
+            if destination_A == source_B:
                 return skip_index
         elif self._modifier == "F":
-            if core[destination_index]._A == core[source_index]._A:
-                if core[destination_index]._B == core[source_index]._B:
+            if destination_A == source_A:
+                if destination_B == source_B:
                     return skip_index
         elif self._modifier == "X":
-            if core[destination_index]._A == core[source_index]._B:
-                if core[destination_index]._B == core[source_index]._A:
+            if destination_A == source_B:
+                if destination_B == source_A:
                     return skip_index
         elif self._modifier == "I":
             if core[destination_index].compare(core[source_index]):
@@ -699,8 +731,8 @@ class Instruction:
         return new_index
 
     def SNE(self, source_index, destination_index):
-        '''SNE -- skip if not equal (compares two instructions, and skips the next
-        instruction if they aren't equal)'''
+        """SNE -- skip if not equal (compares two instructions, and skips the next
+        instruction if they aren't equal)"""
         index = self._index
         core = self._core
         core_size = len(core)
@@ -708,34 +740,39 @@ class Instruction:
         new_index = (index + 1) % core_size
         skip_index = (new_index + 1) % core_size
 
+        destination_A = core[destination_index]._A % core_size
+        source_A = core[source_index]._A % core_size
+        destination_B = core[destination_index]._B % core_size
+        source_B = core[source_index]._B % core_size
+
         if self._modifier == "A":
-            if core[destination_index]._A != core[source_index]._A:
+            if destination_A != source_A:
                 return skip_index
         elif self._modifier == "B":
-            if core[destination_index]._B != core[source_index]._B:
+            if destination_B != source_B:
                 return skip_index
         elif self._modifier == "AB":
-            if core[destination_index]._B != core[source_index]._A:
+            if destination_B != source_A:
                 return skip_index
         elif self._modifier == "BA":
-            if core[destination_index]._A != core[source_index]._B:
+            if destination_A != source_B:
                 return skip_index
         elif self._modifier == "F":
-            if core[destination_index]._A != core[source_index]._A:
-                if core[destination_index]._B != core[source_index]._B:
+            if destination_A != source_A:
+                if destination_B != source_B:
                     return skip_index
         elif self._modifier == "X":
-            if core[destination_index]._A != core[source_index]._B:
-                if core[destination_index]._B != core[source_index]._A:
+            if destination_A != source_B:
+                if destination_B != source_A:
                     return skip_index
         elif self._modifier == "I":
-            if core[destination_index].compare(core[source_index]):
+            if not core[destination_index].compare(core[source_index]):
                 return skip_index
         return new_index
 
     def SLT(self, source_index, destination_index):
-        '''SLT -- skip if lower than (compares two values, and skips the
-        next instruction if the first is lower than the second)'''
+        """SLT -- skip if lower than (compares two values, and skips the
+        next instruction if the first is lower than the second)"""
         index = self._index
         core = self._core
         core_size = len(core)
@@ -743,30 +780,35 @@ class Instruction:
         new_index = (index + 1) % core_size
         skip_index = (new_index + 1) % core_size
 
+        destination_A = core[destination_index]._A % core_size
+        source_A = core[source_index]._A % core_size
+        destination_B = core[destination_index]._B % core_size
+        source_B = core[source_index]._B % core_size
+
         if self._modifier == "A":
-            if core[destination_index]._A > core[source_index]._A:
+            if destination_A > source_A:
                 return skip_index
         elif self._modifier == "B":
-            if core[destination_index]._B > core[source_index]._B:
+            if destination_B > source_B:
                 return skip_index
         elif self._modifier == "AB":
-            if core[destination_index]._B > core[source_index]._A:
+            if destination_B > source_A:
                 return skip_index
         elif self._modifier == "BA":
-            if core[destination_index]._A > core[source_index]._B:
+            if destination_A > source_B:
                 return skip_index
         elif self._modifier == "F" or self._modifier == "I":
-            if core[destination_index]._A > core[source_index]._A:
-                if core[destination_index]._B > core[source_index]._B:
+            if destination_A > source_A:
+                if destination_B > source_B:
                     return skip_index
         elif self._modifier == "X":
-            if core[destination_index]._A > core[source_index]._B:
-                if core[destination_index]._B > core[source_index]._A:
+            if destination_A > source_B:
+                if destination_B > source_A:
                     return skip_index
         return new_index
 
     def NOP(self, source_index, destination_index):
-        '''NOP -- no operation (does nothing)'''
+        """NOP -- no operation (does nothing)"""
         index = self._index
         core = self._core
         core_size = len(core)
