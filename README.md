@@ -1,5 +1,6 @@
 # Core Wars
 
+
 ## 1. Czym są te „Wojny Rdzeniowe”? Kto w ogóle chciałby w to grać?
 
 Wojny Rdzeniowe (ang. Core War) to ~~zmora pierwszorocznych studentów~~ gra komputerowa. Polega ona na pisaniu programów-wojowników w języku mającym asemblerowe naleciałości, zwanym Redcode. Wyżej wymienionych wojowników umieszcza się ich w cyklicznym rdzeniu, który staje się polem bitwy oraz naprzemiennie wykonuje ich instrukcje.
@@ -31,6 +32,11 @@ Wszystkie pliki, potrzebne do uruchomienia programu, można znaleźć w moim rep
 
 Są to:
 
+- Game.py
+- MARS.py
+- Warrior.py
+- Redcode.py
+- Validating_tools.py
 
 Należy umieścić je w jednym, wybranym katalogu w znanym sobie miejscu.
 
@@ -115,9 +121,25 @@ Pracy było dużo, a ilość problemów wzrastała lawinowo. Poniżej zamieszcza
 
 ### 1. Co udało się osiągnąć?
 
-Jednym zdaniem: wszystkie założenia projektowe. Mój program obsługuje wszystkie wymagane rodzaje instrukcji, modyfikatorów oraz trybów adresacji. Potrafi odczytywać pliki wojowników oraz dokonywać ich interpretacji, a także wykrywać błędy danych wejściowych. Sporą część funkcjonalności pokryłem testami jednostkowymi, które pomogły mi kontrolować jakość wprowadzanych z czasem zmian.	
+Krótko i zwięźle: wszystkie założenia projektowe. 
+Mój program obsługuje wymagane rodzaje instrukcji, modyfikatorów oraz trybów adresacji. Potrafi odczytywać pliki wojowników oraz dokonywać ich interpretacji, a także wykrywać błędy danych wejściowych. Sporą część funkcjonalności pokryłem testami jednostkowymi, które pomogły mi kontrolować jakość wprowadzanych z czasem zmian.	 Dodatkowo mój kod (bez modyfikacji ustawień IDE) nie zawiera żadnych błędów lintera flake8, włącznie z błędami zbyt długich linijek. Niemalże każda funkcja została opatrzona opisem w języku angielskim objaśniającym jej działanie. Dodatkowo wszystkie metody odpowiedzialne za obsługę rdzenia zabezpieczyłem przed przypadkowym odwołaniam się poza zakres indeksowania.
+
 
 
 ### 2. Trudności napotkane przy tworzeniu projektu.
 
-Najwięcej problemów stanowiło programowanie funkcji związanych z wykonywaniem instrukcji wojowników. Trudność pojawiła się w momencie, gdy trzeba było obliczać adresy źródłowe i docelowe w rdzeniu przy pomocy trybów adresacji (te zostały opracowane na podstawie asemblera, co, przy jego nieznajomości, stanowiło spore wyzwanie).
+Najwięcej problemów stanowiło programowanie metod związanych z wykonywaniem instrukcji wojowników. Trudność pojawiła się w momencie, gdy trzeba było obliczać adresy źródłowe i docelowe w rdzeniu przy pomocy trybów adresacji (te zostały opracowane na podstawie asemblera, co, przy jego nieznajomości, stanowiło spore wyzwanie). Dodatkowym utrudnieniem był fakt, że wiele źródeł wiedzy o grze podawały sprzeczne ze sobą informacje, co czasem stwarzało dylematy (w projekcie trzymam się konwencji instrukcji nadesłanej z poleceniem). Najczęściej powtarzane przeze mnie błędy to: brak nawiasów na końcu wywoływania bezargumentowej funkcji, nadmiarowe nawiasy dopisywane przy zmiennych obiektu oraz brak inkrementacji iteratora pętli (znalezienie tego błędu trwało 2 dni…).
+
+
+## 5. Bibliografia.
+
+Podczas opracowywania projektu korzystałem z wielu źródeł oraz pomocy:
+- [The beginners' guide to Redcode](vyznev.net/corewar/guide.html) - poradnik załączony razem z poleceniem projektowym, to od niego zacząłem poznawać podstawy języka Redcode i zasady działania gry
+- [corewar.io Documentation](https://corewar-docs.readthedocs.io/en/latest/redcode/) - wspaniała dokumentacja, dzięki niej zrozumiałem i zaimplementowałem większość funkcjonalności programu, w szczególności tryby adresacji zmiennych
+- [Wojny rdzeniowe Redcode: samouczek](https://corewar.co.uk/adamowski/index.htm) - ta strona pozwoliła mi zrozumieć zasady działania instrukcji SPL
+- [Python \_\_Underscore\_\_ Methods](https://www.siafoo.net/article/57) - jak sama nazwa wskazuje, to tutaj znalazłem spis wszystkich „metod z podkreśleniem”
+- [Dokumentacja języka Python](https://docs.python.org/3/) - obszerna baza wiedzy na temat ogromnej ilości modułów, klas, metod i zasad działania samego środowiska
+
+
+## 6. Podziękowania.
+Na koniec chciałbym bardzo podziękować mojemu przewodnikowi po świecie Pythona - Panu Mateuszowi Modrzejewskiemu (@mmodrze1), za okazaną cierpliwość, życzliwość i wszystkie dobre rady, które zostały mi udzielone.
