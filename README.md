@@ -1,4 +1,5 @@
 # Core Wars
+![Baner](https://i.imgur.com/ANFwPPx.png)
 
 
 
