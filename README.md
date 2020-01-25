@@ -87,7 +87,7 @@ Domyślna wartość: 10 000.</td></tr>
 Pole oznaczone **pogrubieniem** jest wymagane. Nawiasów kwadratowych nie zapisujemy. Elementów wymienionych w tabelce możemy używać w dowolnej kolejności.
 
 
-![Przykładowy przebieg symulacji](https://imgur.com/a/m5DeApc)
+![Przykładowy przebieg symulacji](https://i.imgur.com/VNYkA6z.png)
 
 Jeśli wszystko wykonaliśmy poprawnie, nasza gra po pewnym czasie powinna wyglądać podobnie do tej, którą przedstawiłem na grafice powyżej.
 
