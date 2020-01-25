@@ -1,11 +1,13 @@
 # Core Wars
 
 
+
 ## 1. Czym są te „Wojny Rdzeniowe”? Kto w ogóle chciałby w to grać?
 
 Wojny Rdzeniowe (ang. Core War) to ~~zmora pierwszorocznych studentów~~ gra komputerowa. Polega ona na pisaniu programów-wojowników w języku mającym asemblerowe naleciałości, zwanym Redcode. Wyżej wymienionych wojowników umieszcza się ich w cyklicznym rdzeniu, który staje się polem bitwy oraz naprzemiennie wykonuje ich instrukcje.
 
 Brzmi prosto? Nic bardziej mylnego. Programy te mogą przemieszczać się po rdzeniu, stawać się wieloprocesowymi, żądnymi krwi wytworami wyobraźni programistów (bo kto inny, w dobie gier 3D i serwisów z multimediami na żądanie, chciałby się tym zajmować), zmusić inny program do wykonania narzuconego mu kodu i wiele, wiele więcej. Gra toczy się tak długo, aż jeden z wojowników… umrze (kto by pomyślał?). Po bardziej szczegółowe wyjaśnienie przebiegu rozgrywki oraz obowiązujących zasad - [kliknij tutaj](https://corewar.co.uk/ryba/index.htm).
+
 
 
 ## 2. Jak uruchomić program? - krótka instrukcja obsługi.
@@ -85,34 +87,41 @@ Domyślna wartość: 10 000.</td></tr>
 Pole oznaczone **pogrubieniem** jest wymagane. Nawiasów kwadratowych nie zapisujemy. Elementów wymienionych w tabelce możemy używać w dowolnej kolejności.
 
 
+![Przykładowy przebieg symulacji](https://imgur.com/a/m5DeApc)
+
+Jeśli wszystko wykonaliśmy poprawnie, nasza gra po pewnym czasie powinna wyglądać podobnie do tej, którą przedstawiłem na grafice powyżej.
+
+
+
 ## 3. Struktura programu
 
 Swój program podzieliłem na 5 plików i 3 główne klasy:
 
 
 - Game.py:
-  - obsługa uruchamiania programu
-  - przetwarzanie argumentów 
+  - obsługa uruchamiania programu,
+  - przetwarzanie argumentów ,
 
 - MARS.py - klasa MARS:
-  - obsługuje rdzeń
-  - przeprowadza symulację rundy
-  - umożliwia wizualną reprezentację rdzenia
+  - obsługuje rdzeń,
+  - przeprowadza symulację rundy,
+  - umożliwia wizualną reprezentację rdzenia,
 
 - Warrior.py - klasa Warrior:
-  - obsługuje wojowników
-  - odpowiednio wczytuje pliki
+  - obsługuje wojowników,
+  - odpowiednio wczytuje pliki,
 
 - Redcode.py - klasa Instruction:
-  - obsługuje język Redcode
+  - obsługuje język Redcode,
   - interpretuje i uruchamia:
-    - tryby adresacji
-    - modyfikatory
-    - instrukcje
-  - konwertuje linię tekstu z pliku wojownika na odpowiedni obiekt
+    - tryby adresacji,
+    - modyfikatory,
+    - instrukcje,
+  - konwertuje linię tekstu z pliku wojownika na odpowiedni obiekt,
 
 - Validating_tools.py - klasy błędów:
-  - obsługa błędów i wyjątków
+  - obsługa błędów i wyjątków.
+
 
 
 ## 4. Zakres wykonanych prac
@@ -122,24 +131,30 @@ Pracy było dużo, a ilość problemów wzrastała lawinowo. Poniżej zamieszcza
 ### 1. Co udało się osiągnąć?
 
 Krótko i zwięźle: wszystkie założenia projektowe. 
-Mój program obsługuje wymagane rodzaje instrukcji, modyfikatorów oraz trybów adresacji. Potrafi odczytywać pliki wojowników oraz dokonywać ich interpretacji, a także wykrywać błędy danych wejściowych. Sporą część funkcjonalności pokryłem testami jednostkowymi, które pomogły mi kontrolować jakość wprowadzanych z czasem zmian.	 Dodatkowo mój kod (bez modyfikacji ustawień IDE) nie zawiera żadnych błędów lintera flake8, włącznie z błędami zbyt długich linijek. Niemalże każda funkcja została opatrzona opisem w języku angielskim objaśniającym jej działanie. Dodatkowo wszystkie metody odpowiedzialne za obsługę rdzenia zabezpieczyłem przed przypadkowym odwołaniam się poza zakres indeksowania.
+Mój program obsługuje wymagane rodzaje instrukcji, modyfikatorów oraz trybów adresacji. Potrafi odczytywać pliki wojowników oraz dokonywać ich interpretacji, a także wykrywać błędy w ich strukturze. Sporą część funkcjonalności pokryłem testami jednostkowymi, które pomogły mi kontrolować jakość wprowadzanych z czasem zmian. Zgodnie z wymogami zaimplementowałem możliwość graficznej reprezentacji rdzenia (i nawet obsługuje kolory!). Dodatkowo mój kod (bez modyfikacji ustawień IDE) nie zawiera żadnych błędów lintera flake8, włącznie z błędami zbyt długich linijek. Niemalże każda funkcja została opatrzona opisem w języku angielskim objaśniającym jej działanie. Wszystkie metody odpowiedzialne za obsługę rdzenia zabezpieczyłem przed przypadkowym odwołaniam się poza zakres indeksowania (wielokrotnie powtarzające się dzielenie modulo). A co najważniejsze - nauczyłem się mnóstwa nowych instrukcji i metod Pythona.
 
 
 
 ### 2. Trudności napotkane przy tworzeniu projektu.
 
-Najwięcej problemów stanowiło programowanie metod związanych z wykonywaniem instrukcji wojowników. Trudność pojawiła się w momencie, gdy trzeba było obliczać adresy źródłowe i docelowe w rdzeniu przy pomocy trybów adresacji (te zostały opracowane na podstawie asemblera, co, przy jego nieznajomości, stanowiło spore wyzwanie). Dodatkowym utrudnieniem był fakt, że wiele źródeł wiedzy o grze podawały sprzeczne ze sobą informacje, co czasem stwarzało dylematy (w projekcie trzymam się konwencji instrukcji nadesłanej z poleceniem). Najczęściej powtarzane przeze mnie błędy to: brak nawiasów na końcu wywoływania bezargumentowej funkcji, nadmiarowe nawiasy dopisywane przy zmiennych obiektu oraz brak inkrementacji iteratora pętli (znalezienie tego błędu trwało 2 dni…).
+Najwięcej problemów stanowiło programowanie metod związanych z wykonywaniem instrukcji wojowników. Trudność pojawiła się w momencie, gdy trzeba było obliczać adresy źródłowe i docelowe w rdzeniu przy pomocy trybów adresacji (te zostały opracowane na podstawie asemblera, co, przy jego nieznajomości, stanowiło spore wyzwanie). Dodatkowym utrudnieniem był fakt, że wiele źródeł wiedzy o grze podawały sprzeczne ze sobą informacje, co czasem stwarzało dylematy (w projekcie trzymam się konwencji z instrukcji nadesłanej w poleceniu). Najczęściej powtarzane przeze mnie błędy to: brak nawiasów na końcu wywoływania bezargumentowej funkcji, nadmiarowe nawiasy dopisywane przy zmiennych obiektu oraz brak inkrementacji iteratora pętli (znalezienie tego konkretnego trwało 2 dni…). Warto również wspomnieć, że wyświetlanie tak dużej ilości informacji przy pomocy tekstu nie należy do najbardziej wydajnych, dlatego wiele uwagi poświęciłem szukaniu sensownego sposobu przekazywania tekstu do Terminala / Wiersza polecenia. W tym przypadku zastosowałem list comprehension, co kilkukrotnie przyspieszyło wykonywanie programu.
+
 
 
 ## 5. Bibliografia.
 
 Podczas opracowywania projektu korzystałem z wielu źródeł oraz pomocy:
-- [The beginners' guide to Redcode](vyznev.net/corewar/guide.html) - poradnik załączony razem z poleceniem projektowym, to od niego zacząłem poznawać podstawy języka Redcode i zasady działania gry
-- [corewar.io Documentation](https://corewar-docs.readthedocs.io/en/latest/redcode/) - wspaniała dokumentacja, dzięki niej zrozumiałem i zaimplementowałem większość funkcjonalności programu, w szczególności tryby adresacji zmiennych
-- [Wojny rdzeniowe Redcode: samouczek](https://corewar.co.uk/adamowski/index.htm) - ta strona pozwoliła mi zrozumieć zasady działania instrukcji SPL
-- [Python \_\_Underscore\_\_ Methods](https://www.siafoo.net/article/57) - jak sama nazwa wskazuje, to tutaj znalazłem spis wszystkich „metod z podkreśleniem”
-- [Dokumentacja języka Python](https://docs.python.org/3/) - obszerna baza wiedzy na temat ogromnej ilości modułów, klas, metod i zasad działania samego środowiska
+
+- [The beginners' guide to Redcode](vyznev.net/corewar/guide.html) - poradnik załączony razem z poleceniem projektowym, to od niego zacząłem poznawać podstawy języka Redcode i zasady działania gry,
+- [corewar.io Documentation](https://corewar-docs.readthedocs.io/en/latest/redcode/) - wspaniała dokumentacja, dzięki niej zrozumiałem i mogłem zaprojektować największą część programu, w szczególności tryby adresacji zmiennych,
+- [Wojny rdzeniowe Redcode: samouczek](https://corewar.co.uk/adamowski/index.htm) - ta strona pozwoliła mi zrozumieć zasady działania instrukcji SPL,
+- [Python \_\_Underscore\_\_ Methods](https://www.siafoo.net/article/57) - jak sama nazwa wskazuje, to tutaj znalazłem spis wszystkich „metod z podkreśleniem”,
+- [Dokumentacja języka Python](https://docs.python.org/3/) - obszerna baza wiedzy na temat ogromnej ilości modułów, klas, metod i zasad działania samego środowiska.
+
 
 
 ## 6. Podziękowania.
-Na koniec chciałbym bardzo podziękować mojemu przewodnikowi po świecie Pythona - Panu Mateuszowi Modrzejewskiemu (@mmodrze1), za okazaną cierpliwość, życzliwość i wszystkie dobre rady, które zostały mi udzielone.
+
+Na koniec chciałbym bardzo podziękować mojemu przewodnikowi po świecie Pythona - Panu Mateuszowi Modrzejewskiemu, za okazaną cierpliwość, życzliwość i wszystkie dobre rady, które zostały mi udzielone. 
+
+Należy również wspomnieć o wszystkich tych, którzy swoją radą i opinią kształtowali ostateczną wersję projektu oraz niniejszej dokumentacji (Moniko, Karolino, Grzesiu, Ksawery, Olku, Oskarze, Rudolfie - dzięki!).
