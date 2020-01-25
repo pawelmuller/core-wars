@@ -348,8 +348,6 @@ class Instruction:
         pointer = self._index + variable + core_size
         pointer %= core_size
         core[pointer]._A -= 1
-        pointer += (core_size - 1)
-        pointer %= core_size
         index = core[pointer]._A + core[pointer]._index + core_size
         index %= core_size
         return index
@@ -361,8 +359,6 @@ class Instruction:
         pointer = self._index + variable + core_size
         pointer %= core_size
         core[pointer]._B -= 1
-        pointer += (core_size - 1)
-        pointer %= core_size
         index = core[pointer]._B + core[pointer]._index + core_size
         index %= core_size
         return index

@@ -85,7 +85,7 @@ class Warrior:
     def make_a_turn(self):
         """
         Performs a warrior turn.
-        Returns True if successful.
+        Returns True if successful, False if warrior has no processes.
         """
         core = self._core
         core_size = len(core)
@@ -102,8 +102,11 @@ class Warrior:
                 self.add_process(new_index)
             return True
         else:
-            self._is_alive = False
-            return False
+            if len(self._process_queue) <= 0:
+                self._is_alive = False
+                return False
+            else:
+                return True
 
     def add_process(self, index):
         """

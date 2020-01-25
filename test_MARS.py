@@ -18,8 +18,8 @@ def test_validate_warriors():
 
 
 def test_find_a_place():
-    warriors = [Warrior("Warriors/Imp_1.red")]
-    warrior = Warrior("Warriors/Imp_1.red")
+    warriors = [Warrior("Warriors/Imp.red")]
+    warrior = Warrior("Warriors/Imp.red")
 
     core = MARS(5, 1, warriors)
     for i in range(5):

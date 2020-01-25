@@ -104,7 +104,7 @@ class MARS():
         """
         Prepares MARS for simulation.
         """
-        colors = ['red', 'yellow', 'green', 'blue', 'orange',
+        colors = ['red', 'yellow', 'green', 'blue',
                   'cyan', 'magenta', 'white']
         for warrior, color in zip(self._warriors, colors):
             warrior.attach_core(self)
@@ -135,11 +135,10 @@ class MARS():
             warrior.attach_core(self)
             if warrior.make_a_turn():
                 continue
-            elif len(self._playing_warriors) > 2:
-                self._playing_warriors.remove(warrior)
             else:
-                return False
-
+                self._playing_warriors.remove(warrior)
+        if len(self._playing_warriors) < 2:
+            return False
         return True
 
     def simulate_core(self):
@@ -159,7 +158,7 @@ class MARS():
 
     def results(self):
         """
-        Prepare game results.
+        Prepares game results.
         """
         winners = []
         losers = []
@@ -177,6 +176,7 @@ class MARS():
         system("clear")
         default = Instruction(None, "DAT", None, 0, 0)
         print(''.join([" " if instruction.compare(default)
+                       and instruction.get_warrior() is None
                        else colored("X", instruction.get_color())
                        if instruction.get_warrior() is None
                        else colored("█", instruction.get_color())
