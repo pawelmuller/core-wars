@@ -529,7 +529,7 @@ class Instruction:
         elif self._modifier == "B":
             if core[source_index]._B == 0:
                 return None
-                core[destination_index]._B //= core[source_index]._B
+            core[destination_index]._B //= core[source_index]._B
         elif self._modifier == "AB":
             if core[source_index]._A == 0:
                 return None
