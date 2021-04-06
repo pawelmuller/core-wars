@@ -1,13 +1,13 @@
 import pytest
 from MARS import MARS
-from Warrior import Warrior
+from warrior import Warrior
 from Redcode import Instruction
 from Validating_tools import WarriorSizeError, NoWarriorsError
 
 
 def test_validate_warriors():
     test_warriors = [
-        Warrior("Warriors/Dwarf.red") for i in range(100)
+        Warrior("Warriors/Dwarf.red") for _ in range(100)
     ]
     with pytest.raises(WarriorSizeError):
         MARS(100, 100, test_warriors)

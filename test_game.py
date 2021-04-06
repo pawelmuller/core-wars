@@ -1,4 +1,4 @@
-from Warrior import Warrior
+from warrior import Warrior
 from MARS import MARS
 
 

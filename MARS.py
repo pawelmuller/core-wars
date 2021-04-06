@@ -5,7 +5,7 @@ from os import system
 from termcolor import colored
 
 
-class MARS():
+class MARS:
     def __init__(self, size, cycles_limit, warriors):
         self._MARS = []
         self._clear(size)
@@ -13,6 +13,7 @@ class MARS():
         self._warriors = warriors
         self._validate_warriors()
         self._playing_warriors = warriors
+        self._cycles_count = None
 
     def __repr__(self):
         return f"ID: {id(self)}"
@@ -47,7 +48,6 @@ class MARS():
         """
         if len(self._warriors) == 0:
             raise NoWarriorsError("No warriors given.")
-            return
         warriors_length = 0
         for warrior in self._warriors:
             warriors_length += len(warrior)
@@ -55,10 +55,8 @@ class MARS():
             error_msg = "Summed length of warriors is "
             error_msg += "greater than size of the core."
             raise WarriorSizeError(error_msg)
-            return
         if warriors_length == 0:
             raise WarriorSizeError("Warriors are empty.")
-            return
 
     def _find_a_place(self, warrior):
         """

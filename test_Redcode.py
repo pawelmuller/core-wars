@@ -1,6 +1,6 @@
 from Redcode import Instruction
 from MARS import MARS
-from Warrior import Warrior
+from warrior import Warrior
 from Validating_tools import WrongOpcodeError, WrongModifierError
 from Validating_tools import WrongAddressingModeError
 import pytest

@@ -23,6 +23,8 @@ class Warrior:
         # (last on the list - first to run):
         self._process_queue = []
         self._is_alive = True
+        self._core = None
+        self._color = None
 
     # Self representation:
 
@@ -45,7 +47,8 @@ class Warrior:
 
     # File handling:
 
-    def _validate_line(self, line):
+    @staticmethod
+    def _validate_line(line):
         """
         Method checks if line is suitable for converting to
         warrior instruction. If so returns True.
@@ -67,10 +70,6 @@ class Warrior:
         """
         Method imports warrior from file and returns
         a list of its instructions.
-
-        Attributes:
-        :param path_to_file: Path to Redcode file where warrior is located.
-        :type path_to_file: str
         """
         instructions = []
         with open(self._path_to_file, "r") as file:
